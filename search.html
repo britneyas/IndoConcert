@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cari Konser — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    body { background: linear-gradient(3deg, #dce3ff 17%, #ffffff 110%); min-height: 100vh; }
+
+    .explore-header { padding: 48px 112px 32px; }
+    .explore-header h1 { font-size: 42px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+    .explore-header p { font-size: 20px; color: #30436d; margin-bottom: 24px; }
+    .searchbar-wrap { position: relative; max-width: 480px; }
+    .searchbar {
+      display: flex; align-items: center; gap: 12px;
+      background: #fff; border: 1.5px solid var(--gray-200);
+      border-radius: 12px; padding: 14px 20px;
+      box-shadow: 0 0 4.6px rgba(0,0,0,0.25);
+    }
+    .searchbar input {
+      border: none; outline: none; font-size: 18px; color: #000;
+      font-family: 'Inter', sans-serif; width: 100%; background: none;
+    }
+    .searchbar input::placeholder { color: #adaebc; }
+
+    /* POPUP */
+    .search-popup {
+      position: absolute; top: calc(100% + 8px); left: 0;
+      width: 560px; background: #fff; border-radius: 27px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      padding: 16px; z-index: 20;
+    }
+    .popup-result {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px; border-radius: 12px; cursor: pointer;
+      text-decoration: none; color: inherit;
+      transition: background 0.15s;
+    }
+    .popup-result:hover { background: var(--gray-100); }
+    .popup-result img { width: 120px; height: 120px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+    .popup-info { }
+    .popup-title { font-size: 20px; font-weight: 600; color: #111827; margin-bottom: 6px; }
+    .popup-meta { font-size: 16px; color: var(--gray-600); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .popup-divider { border: none; border-top: 1px solid var(--gray-100); margin: 4px 0; }
+
+    /* MAIN LAYOUT */
+    .explore-body { display: grid; grid-template-columns: 300px 1fr; gap: 24px; padding: 0 88px 60px; }
+    .filter-panel {
+      background: #fff; border: 1px solid var(--gray-100);
+      border-radius: 12px; box-shadow: 0 0 8px rgba(0,0,0,0.2);
+      padding: 24px; align-self: start; position: sticky; top: 20px;
+    }
+    .filter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .filter-header h3 { font-size: 16px; font-weight: 600; color: #111827; }
+    .filter-reset { font-size: 12px; font-weight: 700; color: var(--teal); background: none; border: none; cursor: pointer; }
+    .filter-group { margin-bottom: 24px; }
+    .filter-group-title { font-size: 14px; font-weight: 500; color: #111827; margin-bottom: 10px; display: flex; justify-content: space-between; }
+    .filter-option { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 14px; color: #374151; cursor: pointer; }
+    .filter-option input[type="checkbox"] { accent-color: var(--primary); width: 13px; height: 13px; }
+    .date-inputs { display: flex; flex-direction: column; gap: 8px; }
+    .date-label { font-size: 12px; color: var(--gray-600); }
+    .date-input { border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; font-size: 14px; width: 100%; outline: none; font-family: 'Inter', sans-serif; }
+    .price-row { display: flex; align-items: center; gap: 8px; }
+    .price-input { flex: 1; border: 1px solid var(--gray-200); border-radius: 8px; padding: 10px 12px; font-size: 14px; outline: none; font-family: 'Inter', sans-serif; }
+    .price-input::placeholder { color: #adaebc; }
+    .price-range-hint { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+
+    .results-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .results-count { font-size: 14px; color: var(--gray-600); }
+    .sort-select { border: 1px solid var(--gray-200); border-radius: 8px; padding: 8px 12px; font-size: 14px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .concerts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .concert-card { background: #fff; border: 1px solid var(--gray-100); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .concert-card img { width: 100%; height: 170px; object-fit: cover; }
+    .concert-card-body { padding: 14px 16px; }
+    .concert-card-title { font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 8px; }
+    .concert-meta-row { font-size: 12px; color: var(--gray-600); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .btn-detail { display: inline-block; background: var(--navy-btn); color: #fff; border: none; border-radius: 7px; padding: 8px 14px; font-size: 13px; cursor: pointer; margin-top: 10px; text-decoration: none; transition: opacity 0.2s; }
+    .btn-detail:hover { opacity: 0.85; }
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 32px; }
+    .page-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; background: none; color: #374151; transition: background 0.2s; }
+    .page-btn.active { background: var(--blue-mid); color: #fff; }
+    .page-btn:hover:not(.active) { background: var(--gray-100); }
+    .page-dots { color: var(--gray-500); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <nav class="navbar">
+      <a href="index.html" class="navbar-logo">
+        <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
+        <span class="navbar-logo-text">IndoConcert</span>
+      </a>
+      <div class="navbar-links">
+        <a href="index.html">Beranda</a>
+        <a href="explore.html" class="active">Jelajahi</a>
+        <a href="fan-match.html">Cari Teman</a>
+        <a href="about.html">Tentang Kami</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="login.html" class="btn-masuk">Masuk</a>
+        <a href="register.html" class="btn-daftar">Daftar</a>
+      </div>
+    </nav>
+
+    <div class="explore-header">
+      <h1>Jelajahi Konser</h1>
+      <p>Temukan konser favorit Anda dari berbagai genre dan lokasi</p>
+      <div class="searchbar-wrap">
+        <div class="searchbar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#adaebc" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" placeholder="Cari konser..." oninput="togglePopup(this.value)" onfocus="togglePopup(this.value)" />
+        </div>
+        <!-- SEARCH POPUP -->
+        <div class="search-popup" id="searchPopup" style="display:none;">
+          <a href="concert-detail.html" class="popup-result">
+            <img src="https://www.figma.com/api/mcp/asset/b7996a7c-3e9d-4d25-b62e-6f05a36cc6ba" alt="Tulus" />
+            <div class="popup-info">
+              <div class="popup-title">TULUS: Tur Manusia</div>
+              <div class="popup-meta">📅 15 Desember 2026</div>
+              <div class="popup-meta">📍 Tennis Indoor Senayan</div>
+            </div>
+          </a>
+          <div class="popup-divider"></div>
+          <a href="concert-detail.html" class="popup-result">
+            <img src="https://www.figma.com/api/mcp/asset/b7996a7c-3e9d-4d25-b62e-6f05a36cc6ba" alt="Tulus" />
+            <div class="popup-info">
+              <div class="popup-title">TULUS: Tur Manusia</div>
+              <div class="popup-meta">📅 22 Desember 2026</div>
+              <div class="popup-meta">📍 ICE BSD Tangerang</div>
+            </div>
+          </a>
+          <div class="popup-divider"></div>
+          <a href="concert-detail.html" class="popup-result">
+            <img src="https://www.figma.com/api/mcp/asset/b7996a7c-3e9d-4d25-b62e-6f05a36cc6ba" alt="Tulus" />
+            <div class="popup-info">
+              <div class="popup-title">TULUS: Tur Manusia</div>
+              <div class="popup-meta">📅 28 Desember 2026</div>
+              <div class="popup-meta">📍 Balai Sarbini Jakarta</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="explore-body">
+      <aside class="filter-panel">
+        <div class="filter-header">
+          <h3>Filter</h3>
+          <button class="filter-reset">Reset Semua</button>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-title">Lokasi <span>▾</span></div>
+          <label class="filter-option"><input type="checkbox" /> Jakarta</label>
+          <label class="filter-option"><input type="checkbox" /> Bandung</label>
+          <label class="filter-option"><input type="checkbox" /> Surabaya</label>
+          <label class="filter-option"><input type="checkbox" /> Bali</label>
+          <label class="filter-option"><input type="checkbox" /> Yogyakarta</label>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-title">Tanggal <span>▾</span></div>
+          <div class="date-inputs">
+            <div><div class="date-label">Dari</div><input type="date" class="date-input" /></div>
+            <div><div class="date-label">Sampai</div><input type="date" class="date-input" /></div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-title">Genre Musik <span>▾</span></div>
+          <label class="filter-option"><input type="checkbox" /> Pop</label>
+          <label class="filter-option"><input type="checkbox" /> Indie</label>
+          <label class="filter-option"><input type="checkbox" /> Jazz</label>
+          <label class="filter-option"><input type="checkbox" /> K-Pop</label>
+          <label class="filter-option"><input type="checkbox" /> Rock</label>
+          <label class="filter-option"><input type="checkbox" /> EDM</label>
+        </div>
+        <div class="filter-group">
+          <div class="filter-group-title">Harga <span>▾</span></div>
+          <div class="price-row">
+            <input type="number" class="price-input" placeholder="Min" />
+            <span>-</span>
+            <input type="number" class="price-input" placeholder="Maks" />
+          </div>
+          <div class="price-range-hint">Rentang: Rp 50.000 - Rp 20.000.000</div>
+        </div>
+      </aside>
+
+      <div>
+        <div class="results-meta">
+          <span class="results-count">Menampilkan 48 konser</span>
+          <select class="sort-select"><option>Paling Populer</option><option>Harga Terendah</option><option>Harga Tertinggi</option><option>Terbaru</option></select>
+        </div>
+        <div class="concerts-grid">
+          <div class="concert-card">
+            <img src="https://www.figma.com/api/mcp/asset/de7717c3-6a30-4c03-afa5-96f52ef3d03a" alt="Nadin Amizah" />
+            <div class="concert-card-body">
+              <div class="concert-card-title">Nadin Amizah</div>
+              <div class="concert-meta-row">📅 15 Desember 2026</div>
+              <div class="concert-meta-row">📍 Tennis Indoor Senayan</div>
+              <a href="concert-detail.html" class="btn-detail">Lihat Detail</a>
+            </div>
+          </div>
+          <div class="concert-card">
+            <img src="https://www.figma.com/api/mcp/asset/12bb28f4-6c04-493b-97a8-6420f6c0cf02" alt="Tulus" />
+            <div class="concert-card-body">
+              <div class="concert-card-title">Tulus</div>
+              <div class="concert-meta-row">📅 22 Desember 2026</div>
+              <div class="concert-meta-row">📍 ICE BSD Tangerang</div>
+              <a href="concert-detail.html" class="btn-detail">Lihat Detail</a>
+            </div>
+          </div>
+          <div class="concert-card">
+            <img src="https://www.figma.com/api/mcp/asset/e0f83d00-fa53-4505-bc95-ef5668b78dba" alt="Raisa" />
+            <div class="concert-card-body">
+              <div class="concert-card-title">Raisa</div>
+              <div class="concert-meta-row">📅 28 Desember 2026</div>
+              <div class="concert-meta-row">📍 Balai Sarbini Jakarta</div>
+              <a href="concert-detail.html" class="btn-detail">Lihat Detail</a>
+            </div>
+          </div>
+          <div class="concert-card">
+            <img src="https://www.figma.com/api/mcp/asset/c971e362-29b7-4a33-b9a2-c1b95087d1d5" alt="Hindia" />
+            <div class="concert-card-body">
+              <div class="concert-card-title">Hindia</div>
+              <div class="concert-meta-row">📅 05 Januari 2026</div>
+              <div class="concert-meta-row">📍 Trans Studio Bandung</div>
+              <a href="concert-detail.html" class="btn-detail">Lihat Detail</a>
+            </div>
+          </div>
+          <div class="concert-card">
+            <img src="https://www.figma.com/api/mcp/asset/2f727c9d-73d4-4da0-b9c0-eae55daf7d5f" alt="Keisya" />
+            <div class="concert-card-body">
+              <div class="concert-card-title">Keisya Levronka</div>
+              <div class="concert-meta-row">📅 12 Januari 2026</div>
+              <div class="concert-meta-row">📍 Malioboro Street Yogyakarta</div>
+              <a href="concert-detail.html" class="btn-detail">Lihat Detail</a>
+            </div>
+          </div>
+          <div class="concert-card">
+            <img src="https://www.figma.com/api/mcp/asset/761d453a-f96e-4b55-a7ed-50eb59516328" alt="Pamungkas" />
+            <div class="concert-card-body">
+              <div class="concert-card-title">Pamungkas</div>
+              <div class="concert-meta-row">📅 18 Januari 2026</div>
+              <div class="concert-meta-row">📍 Graha Bhakti Budaya Surabaya</div>
+              <a href="concert-detail.html" class="btn-detail">Lihat Detail</a>
+            </div>
+          </div>
+        </div>
+        <div class="pagination">
+          <span>&#8592;</span>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <span class="page-dots">...</span>
+          <button class="page-btn">8</button>
+          <span>&#8594;</span>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo"><svg width="18" height="28" viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#fff"/></svg>IndoConcert</div>
+          <p>Platform terpercaya untuk booking tiket konser musik terbaik di Indonesia.</p>
+          <div class="footer-socials">
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.4 19.54C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#333"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col"><h4>Informasi</h4><ul><li><a href="#">Kontak</a></li><li><a href="about.html">Tentang Kami</a></li><li><a href="#">Karir</a></li><li><a href="#">Blog</a></li></ul></div>
+        <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Syarat &amp; Ketentuan</a></li><li><a href="#">Kebijakan Privasi</a></li><li><a href="#">FAQ</a></li><li><a href="#">Bantuan</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">© 2025 IndoConcert. Hak cipta dilindungi.</div>
+    </footer>
+  </div>
+
+  <script>
+    function togglePopup(val) {
+      document.getElementById('searchPopup').style.display = val.trim() ? 'block' : 'none';
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.searchbar-wrap')) {
+        document.getElementById('searchPopup').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beli Tiket — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    body { background: linear-gradient(175deg, rgba(112,140,255,0) 7%, #fff 46%); min-height: 100vh; }
+
+    /* MODAL OVERLAY */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 50;
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .booking-modal {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 0 18px 15px rgba(0,0,0,0.25);
+      width: 100%; max-width: 1100px;
+      max-height: 90vh; overflow-y: auto;
+      padding: 40px 48px;
+    }
+
+    /* CONCERT HEADER */
+    .modal-concert-title {
+      font-size: 36px; font-weight: 700; color: #000;
+      margin-bottom: 16px;
+    }
+    .modal-meta { display: flex; gap: 32px; margin-bottom: 20px; }
+    .modal-meta-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 28px; font-weight: 500; color: var(--gray-600);
+    }
+    .modal-meta-item img { width: 36px; height: 36px; object-fit: contain; }
+    .divider { border: none; border-top: 1px solid #e5e7eb; margin: 20px 0; }
+
+    /* TIKET */
+    .tiket-heading { font-size: 32px; font-weight: 700; color: #000; margin-bottom: 20px; }
+
+    .tiket-row {
+      display: flex; align-items: center;
+      gap: 16px; padding: 16px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .tiket-icon {
+      width: 80px; height: 80px; background: #e3e8ff;
+      border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      font-size: 32px; flex-shrink: 0;
+    }
+    .tiket-info { flex: 1; }
+    .tiket-name { font-size: 28px; font-weight: 500; color: #000; }
+    .tiket-desc { font-size: 18px; color: var(--gray-500); margin-top: 2px; }
+    .tiket-link {
+      font-size: 18px; color: var(--gray-600);
+      text-decoration: underline; cursor: pointer;
+      margin-top: 4px; display: inline-block;
+    }
+    .tiket-link:hover { color: var(--primary); }
+    .tiket-qty {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .qty-btn {
+      width: 38px; height: 38px; background: var(--primary);
+      color: #fff; border: none; border-radius: 8px;
+      font-size: 20px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.2s;
+    }
+    .qty-btn:hover { opacity: 0.85; }
+    .qty-num { font-size: 28px; color: rgba(0,0,0,0.6); min-width: 28px; text-align: center; }
+    .tiket-price {
+      font-size: 20px; color: rgba(0,0,0,0.6);
+      min-width: 180px; text-align: right;
+    }
+
+    /* SUMMARY */
+    .summary-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 0 8px;
+    }
+    .summary-label { font-size: 28px; font-weight: 500; color: rgba(0,0,0,0.6); }
+    .summary-count { font-size: 32px; font-weight: 700; color: #000; }
+    .summary-total { font-size: 32px; font-weight: 700; color: #000; text-align: right; }
+
+    .btn-lanjut-bayar {
+      width: 100%; height: 80px;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 20px;
+      font-size: 32px; font-weight: 700;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      margin-top: 16px; transition: opacity 0.2s;
+    }
+    .btn-lanjut-bayar:hover { opacity: 0.88; }
+
+    /* BACKGROUND CONTENT (dimmed) */
+    .bg-content {
+      filter: blur(2px);
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    .concert-banner { height: 300px; overflow: hidden; }
+    .concert-banner img { width: 100%; height: 100%; object-fit: cover; }
+  </style>
+</head>
+<body>
+  <!-- BACKGROUND (dimmed concert detail) -->
+  <div class="bg-content">
+    <div class="page-wrapper">
+      <nav class="navbar">
+        <a href="index.html" class="navbar-logo">
+          <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
+          <span class="navbar-logo-text">IndoConcert</span>
+        </a>
+        <div class="navbar-links">
+          <a href="index.html">Beranda</a>
+          <a href="explore.html">Jelajahi</a>
+          <a href="fan-match.html">Cari Teman</a>
+          <a href="about.html">Tentang Kami</a>
+        </div>
+        <div class="navbar-actions">
+          <a href="login.html" class="btn-masuk">Masuk</a>
+          <a href="register.html" class="btn-daftar">Daftar</a>
+        </div>
+      </nav>
+      <div class="concert-banner">
+        <img src="https://www.figma.com/api/mcp/asset/4ab18ffc-ba7e-4e76-8759-1ada154c6dda" alt="Banner" />
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop">
+    <div class="booking-modal">
+      <div class="modal-concert-title">TULUS: Tur Manusia 2023</div>
+      <div class="modal-meta">
+        <div class="modal-meta-item">
+          <img src="https://www.figma.com/api/mcp/asset/dc20ce05-0dcf-44b0-984f-88410fcd7ade" alt="loc" />
+          Bali Nusa Dua Convention Center
+        </div>
+        <div class="modal-meta-item">
+          <img src="https://www.figma.com/api/mcp/asset/ac2df54b-ad6b-4cfd-93c0-a520568418a8" alt="cal" />
+          1 Februari 2023, 15:00 - 23:00 WIB
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="tiket-heading">Tiket Tersedia</div>
+
+      <!-- VIP A -->
+      <div class="tiket-row">
+        <div class="tiket-icon">🎫</div>
+        <div class="tiket-info">
+          <div class="tiket-name">VIP A</div>
+          <div class="tiket-desc">Kursi VIP + Gelang eksklusif</div>
+          <a href="virtual-seat.html" class="tiket-link">lihat kategori kursi kamu</a>
+        </div>
+        <div class="tiket-qty">
+          <button class="qty-btn" onclick="changeQty('vipa', -1)">−</button>
+          <span class="qty-num" id="qty-vipa">3</span>
+          <button class="qty-btn" onclick="changeQty('vipa', 1)">+</button>
+        </div>
+        <div class="tiket-price">Rp. 2.000.000 / org</div>
+      </div>
+
+      <!-- VIP B -->
+      <div class="tiket-row">
+        <div class="tiket-icon">🎫</div>
+        <div class="tiket-info">
+          <div class="tiket-name">VIP B</div>
+          <div class="tiket-desc">Kursi VIP + Gelang reguler</div>
+          <a href="virtual-seat.html" class="tiket-link">lihat kategori kursi kamu</a>
+        </div>
+        <div class="tiket-qty">
+          <button class="qty-btn" onclick="changeQty('vipb', -1)">−</button>
+          <span class="qty-num" id="qty-vipb">0</span>
+          <button class="qty-btn" onclick="changeQty('vipb', 1)">+</button>
+        </div>
+        <div class="tiket-price">Rp. 1.800.000 / org</div>
+      </div>
+
+      <!-- Regular A -->
+      <div class="tiket-row">
+        <div class="tiket-icon">🎫</div>
+        <div class="tiket-info">
+          <div class="tiket-name">Regular A</div>
+          <div class="tiket-desc">Kursi Gelang reguler</div>
+          <a href="virtual-seat.html" class="tiket-link">lihat kategori kursi kamu</a>
+        </div>
+        <div class="tiket-qty">
+          <button class="qty-btn" onclick="changeQty('reg', -1)">−</button>
+          <span class="qty-num" id="qty-reg">0</span>
+          <button class="qty-btn" onclick="changeQty('reg', 1)">+</button>
+        </div>
+        <div class="tiket-price">Rp. 1.000.000 / org</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="summary-row">
+        <div>
+          <div class="summary-label">Jumlah tiket</div>
+          <div class="summary-count" id="total-qty">3 tiket</div>
+        </div>
+        <div>
+          <div class="summary-label" style="text-align:right;">Total</div>
+          <div class="summary-total" id="total-price">Rp. 6.000.000,-</div>
+        </div>
+      </div>
+
+      <button class="btn-lanjut-bayar" onclick="alert('Lanjut ke pembayaran...')">
+        Lanjut pembayaran
+      </button>
+
+      <p style="text-align:center;margin-top:16px;">
+        <a href="concert-detail.html" style="color:var(--gray-500);font-size:14px;">← Kembali ke detail konser</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const prices = { vipa: 2000000, vipb: 1800000, reg: 1000000 };
+    const qtys   = { vipa: 3, vipb: 0, reg: 0 };
+
+    function changeQty(key, delta) {
+      qtys[key] = Math.max(0, qtys[key] + delta);
+      document.getElementById('qty-' + key).textContent = qtys[key];
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const total = Object.keys(qtys).reduce((s, k) => s + qtys[k] * prices[k], 0);
+      const count = Object.values(qtys).reduce((s, v) => s + v, 0);
+      document.getElementById('total-qty').textContent  = count + ' tiket';
+      document.getElementById('total-price').textContent = 'Rp. ' + total.toLocaleString('id-ID') + ',-';
+    }
+  </script>
+</body>
+</html>

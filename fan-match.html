@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cari Teman — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    body { background: linear-gradient(175deg, rgba(112,140,255,0) 7%, #fff 46%); min-height: 100vh; }
+
+    /* HERO */
+    .fm-hero {
+      padding: 64px 112px 48px;
+      text-align: center;
+    }
+    .fm-hero h1 {
+      font-size: 52px; font-weight: 700;
+      color: var(--primary);
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .fm-hero h1 span { color: var(--teal); display: block; }
+    .fm-hero p {
+      font-size: 20px; color: rgba(12,25,78,0.8);
+      max-width: 680px; margin: 0 auto 32px; line-height: 1.6;
+    }
+    .fm-hero-btns { display: flex; gap: 16px; justify-content: center; }
+    .btn-match-primary {
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 8px;
+      padding: 12px 28px; font-size: 16px; font-weight: 500;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: opacity 0.2s;
+    }
+    .btn-match-primary:hover { opacity: 0.88; }
+    .btn-match-outline {
+      background: transparent; color: var(--primary);
+      border: 1.5px solid var(--primary); border-radius: 8px;
+      padding: 12px 28px; font-size: 16px; font-weight: 500;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-match-outline:hover { background: var(--primary); color: #fff; }
+
+    /* MATCH FORM */
+    .match-form-section {
+      padding: 0 112px 56px;
+    }
+    .match-form-heading {
+      font-size: 28px; font-weight: 700;
+      color: var(--primary); text-align: center;
+      margin-bottom: 24px;
+    }
+    .match-form-card {
+      background: linear-gradient(154deg, rgba(235,239,255,0.2) 2%, rgba(219,226,255,0.2) 97%);
+      border-radius: 24px;
+      box-shadow: 0 8px 5px rgba(0,0,0,0.1), 0 20px 12px rgba(0,0,0,0.1);
+      padding: 36px 40px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 32px; }
+    .form-group label { font-size: 16px; font-weight: 600; color: var(--primary); display: block; margin-bottom: 8px; }
+    .form-select, .form-input {
+      width: 100%; height: 60px;
+      background: #fff; border: 1px solid var(--gray-200);
+      border-radius: 16px; padding: 0 16px;
+      font-size: 15px; font-family: 'Inter', sans-serif;
+      color: #000; outline: none; cursor: pointer;
+      appearance: none;
+    }
+    .form-select:focus, .form-input:focus { border-color: var(--primary); }
+    .artist-tags { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .artist-tag {
+      background: rgba(12,25,78,0.7); color: #fff;
+      border-radius: 9999px; padding: 8px 16px;
+      font-size: 13px; cursor: pointer;
+    }
+    .artist-tag-add {
+      background: transparent; color: var(--primary);
+      border: 2px dashed var(--primary); border-radius: 9999px;
+      padding: 8px 16px; font-size: 13px; cursor: pointer;
+    }
+    .form-submit-wrap { text-align: center; margin-top: 24px; }
+    .btn-cocokkan {
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 8px;
+      padding: 14px 40px; font-size: 16px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: opacity 0.2s;
+    }
+    .btn-cocokkan:hover { opacity: 0.88; }
+
+    /* FAN MATCHES */
+    .fan-matches-section { background: #e7e9f3; padding: 56px 112px; }
+    .section-title-center { font-size: 32px; font-weight: 700; color: var(--primary); text-align: center; margin-bottom: 36px; }
+    .fan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .fan-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 4px 3px rgba(0,0,0,0.1), 0 10px 7px rgba(0,0,0,0.1);
+    }
+    .fan-card-header { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+    .fan-avatar {
+      width: 48px; height: 48px; border-radius: 9999px;
+      object-fit: cover; flex-shrink: 0;
+      background: var(--gray-200);
+    }
+    .fan-name { font-size: 15px; font-weight: 600; color: var(--primary); }
+    .fan-match-pct { font-size: 15px; font-weight: 700; color: var(--blue-light); }
+    .fan-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .fan-tag {
+      background: rgba(12,25,78,0.1);
+      color: var(--primary);
+      font-size: 11px; border-radius: 8px;
+      padding: 4px 10px;
+    }
+    .btn-chat {
+      width: 100%; background: var(--primary); color: #fff;
+      border: none; border-radius: 16px;
+      padding: 12px; font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: opacity 0.2s;
+    }
+    .btn-chat:hover { opacity: 0.88; }
+
+    /* GROUP BUY */
+    .group-buy-section { background: #fff; padding: 56px 112px; }
+    .group-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .group-card {
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 10px rgba(0,0,0,0.1), 0 20px 25px rgba(0,0,0,0.1);
+    }
+    .group-card-img { width: 100%; height: 180px; object-fit: cover; background: var(--gray-200); }
+    .group-card-body { padding: 20px; }
+    .group-card-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+    .group-leader { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .leader-avatar {
+      width: 32px; height: 32px; border-radius: 9999px;
+      background: var(--gray-200); object-fit: cover;
+    }
+    .leader-name { font-size: 14px; font-weight: 500; color: var(--teal); }
+    .group-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .group-members { font-size: 14px; font-weight: 600; color: var(--primary); }
+    .group-discount {
+      background: rgba(86,161,157,0.2); color: var(--teal-light);
+      font-size: 12px; font-weight: 700;
+      border-radius: 9999px; padding: 4px 14px;
+    }
+    .btn-gabung {
+      width: 100%; background: var(--primary); color: #fff;
+      border: none; border-radius: 20px;
+      padding: 14px; font-size: 16px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: opacity 0.2s;
+    }
+    .btn-gabung:hover { opacity: 0.88; }
+
+    /* CREATE GROUP */
+    .create-group-section { background: #e7e9f3; padding: 56px 112px 80px; }
+    .create-card {
+      background: linear-gradient(114deg, rgba(235,239,255,0.2) 2%, rgba(219,226,255,0.2) 97%);
+      border-radius: 24px;
+      box-shadow: 0 8px 5px rgba(0,0,0,0.1), 0 20px 12px rgba(0,0,0,0.1);
+      padding: 36px 40px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .create-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 32px; }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <nav class="navbar">
+      <a href="index.html" class="navbar-logo">
+        <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
+        <span class="navbar-logo-text">IndoConcert</span>
+      </a>
+      <div class="navbar-links">
+        <a href="index.html">Beranda</a>
+        <a href="explore.html">Jelajahi</a>
+        <a href="fan-match.html" class="active">Cari Teman</a>
+        <a href="about.html">Tentang Kami</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="login.html" class="btn-masuk">Masuk</a>
+        <a href="register.html" class="btn-daftar">Daftar</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="fm-hero">
+      <h1>Temukan Teman Anda.<span>Beli Tiket Bersama.</span></h1>
+      <p>Bertemu dengan fans yang menyukai artis yang sama dan hemat lebih banyak dengan diskon grup.</p>
+      <div class="fm-hero-btns">
+        <button class="btn-match-primary">Mulai Mencocokkan</button>
+        <button class="btn-match-outline">Cari Grup</button>
+      </div>
+    </section>
+
+    <!-- MATCH FORM -->
+    <section class="match-form-section">
+      <div class="match-form-heading">Beritahu preferensi Anda dan kami akan menghubungkan Anda dengan fans yang memiliki ketertarikan serupa</div>
+      <div class="match-form-card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Artis Favorit</label>
+            <div class="artist-tags">
+              <span class="artist-tag">Taylor Swift</span>
+              <span class="artist-tag">BTS</span>
+              <span class="artist-tag">IU</span>
+              <span class="artist-tag-add">+ Tambah</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Lokasi yang Diinginkan</label>
+            <select class="form-select"><option>Jakarta</option><option>Bali</option><option>Bandung</option><option>Surabaya</option></select>
+          </div>
+          <div class="form-group">
+            <label>Rentang Anggaran</label>
+            <select class="form-select"><option>Rp 500K - 1M</option><option>Rp 1M - 2M</option><option>Rp 2M - 5M</option></select>
+          </div>
+          <div class="form-group">
+            <label>Ukuran Grup</label>
+            <select class="form-select"><option>2-3 orang</option><option>4-5 orang</option><option>6+ orang</option></select>
+          </div>
+        </div>
+        <div class="form-submit-wrap">
+          <button class="btn-cocokkan">🔍 Cocokkan Fans</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAN MATCHES -->
+    <section class="fan-matches-section">
+      <div class="section-title-center">Kecocokan Fan Anda</div>
+      <div class="fan-grid">
+        <div class="fan-card">
+          <div class="fan-card-header">
+            <div class="fan-avatar" style="background:#d1d5db;"></div>
+            <div>
+              <div class="fan-name">Sarah Kim</div>
+              <div class="fan-match-pct">87% Cocok</div>
+            </div>
+          </div>
+          <div class="fan-tags">
+            <span class="fan-tag">Taylor Swift</span>
+            <span class="fan-tag">IU</span>
+          </div>
+          <button class="btn-chat">💬 Obrolan</button>
+        </div>
+        <div class="fan-card">
+          <div class="fan-card-header">
+            <div class="fan-avatar" style="background:#d1d5db;"></div>
+            <div>
+              <div class="fan-name">Alex Chen</div>
+              <div class="fan-match-pct">92% Cocok</div>
+            </div>
+          </div>
+          <div class="fan-tags">
+            <span class="fan-tag">BTS</span>
+            <span class="fan-tag">Treasure</span>
+          </div>
+          <button class="btn-chat">💬 Obrolan</button>
+        </div>
+        <div class="fan-card">
+          <div class="fan-card-header">
+            <div class="fan-avatar" style="background:#d1d5db;"></div>
+            <div>
+              <div class="fan-name">Maya Sari</div>
+              <div class="fan-match-pct">78% Cocok</div>
+            </div>
+          </div>
+          <div class="fan-tags">
+            <span class="fan-tag">NewJeans</span>
+            <span class="fan-tag">IVE</span>
+          </div>
+          <button class="btn-chat">💬 Obrolan</button>
+        </div>
+        <div class="fan-card">
+          <div class="fan-card-header">
+            <div class="fan-avatar" style="background:#d1d5db;"></div>
+            <div>
+              <div class="fan-name">Rio Pratama</div>
+              <div class="fan-match-pct">85% Cocok</div>
+            </div>
+          </div>
+          <div class="fan-tags">
+            <span class="fan-tag">Coldplay</span>
+            <span class="fan-tag">Ed Sheeran</span>
+          </div>
+          <button class="btn-chat">💬 Obrolan</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PEMBELIAN GRUP AKTIF -->
+    <section class="group-buy-section">
+      <div class="section-title-center">Pembelian Grup yang Sedang Aktif</div>
+      <div class="group-grid">
+        <div class="group-card">
+          <img class="group-card-img" src="https://www.figma.com/api/mcp/asset/73ab2c40-0f96-4e34-a6c3-bdba95b386aa" alt="Taylor Swift" />
+          <div class="group-card-body">
+            <div class="group-card-title">Taylor Swift - Eras Tour</div>
+            <div class="group-leader">
+              <div class="leader-avatar"></div>
+              <span class="leader-name">Dipimpin oleh Jessica</span>
+            </div>
+            <div class="group-meta">
+              <span class="group-members">3/5 anggota</span>
+              <span class="group-discount">Hemat 12%</span>
+            </div>
+            <button class="btn-gabung">👥 Gabung Grup</button>
+          </div>
+        </div>
+        <div class="group-card">
+          <img class="group-card-img" src="https://www.figma.com/api/mcp/asset/41350b04-6112-4be9-8293-cf32aac231d8" alt="BTS" />
+          <div class="group-card-body">
+            <div class="group-card-title">BTS - Yet To Come</div>
+            <div class="group-leader">
+              <div class="leader-avatar"></div>
+              <span class="leader-name">Dipimpin oleh David</span>
+            </div>
+            <div class="group-meta">
+              <span class="group-members">2/4 anggota</span>
+              <span class="group-discount">Hemat 15%</span>
+            </div>
+            <button class="btn-gabung">👥 Gabung Grup</button>
+          </div>
+        </div>
+        <div class="group-card">
+          <img class="group-card-img" src="https://www.figma.com/api/mcp/asset/b9e40810-0f1f-4595-bbd3-a9de3d59fe71" alt="Coldplay" />
+          <div class="group-card-body">
+            <div class="group-card-title">Coldplay - Music of Spheres</div>
+            <div class="group-leader">
+              <div class="leader-avatar"></div>
+              <span class="leader-name">Dipimpin oleh Amanda</span>
+            </div>
+            <div class="group-meta">
+              <span class="group-members">4/6 anggota</span>
+              <span class="group-discount">Hemat 18%</span>
+            </div>
+            <button class="btn-gabung">👥 Gabung Grup</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUAT GRUP -->
+    <section class="create-group-section">
+      <div class="section-title-center">Buat Grup Anda Sendiri</div>
+      <p style="text-align:center;color:rgba(12,25,78,0.7);font-size:18px;margin-bottom:28px;">Mulai grup pembelian dan hemat lebih banyak bersama sesama fans</p>
+      <div class="create-card">
+        <div class="create-grid">
+          <div class="form-group">
+            <label>Pilih Konser</label>
+            <select class="form-select"><option>Taylor Swift - Eras Tour</option><option>BTS - Yet To Come</option><option>Coldplay</option></select>
+          </div>
+          <div class="form-group">
+            <label>Kategori Kursi</label>
+            <select class="form-select"><option>VIP</option><option>VVIP</option><option>Reguler</option></select>
+          </div>
+          <div class="form-group">
+            <label>Jumlah Minimum Grup</label>
+            <select class="form-select"><option>2 orang</option><option>3 orang</option><option>4 orang</option></select>
+          </div>
+          <div class="form-group">
+            <label>Jumlah Target Grup</label>
+            <select class="form-select"><option>5 orang</option><option>6 orang</option><option>8 orang</option></select>
+          </div>
+        </div>
+        <div class="form-submit-wrap">
+          <button class="btn-cocokkan">+ Buat Grup</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo">
+            <svg width="18" height="28" viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#fff"/></svg>
+            IndoConcert
+          </div>
+          <p>Platform terpercaya untuk booking tiket konser musik terbaik di Indonesia.</p>
+          <div class="footer-socials">
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.4 19.54C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#333"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Informasi</h4>
+          <ul><li><a href="#">Kontak</a></li><li><a href="about.html">Tentang Kami</a></li><li><a href="#">Karir</a></li><li><a href="#">Blog</a></li></ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul><li><a href="#">Syarat &amp; Ketentuan</a></li><li><a href="#">Kebijakan Privasi</a></li><li><a href="#">FAQ</a></li><li><a href="#">Bantuan</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2025 IndoConcert. Hak cipta dilindungi.</div>
+    </footer>
+  </div>
+</body>
+</html>

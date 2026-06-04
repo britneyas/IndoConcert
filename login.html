@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Masuk — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    body {
+      background: linear-gradient(205.6deg, #ffffff 20%, #dbe2ff 67%);
+      min-height: 100vh;
+    }
+
+    /* ---- AUTH LAYOUT ---- */
+    .auth-page {
+      max-width: 1440px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    .auth-body {
+      display: flex;
+      align-items: flex-start;
+      gap: 60px;
+      padding: 48px 80px 80px 80px;
+    }
+
+    /* Left: concert photo */
+    .auth-photo {
+      flex: 0 0 560px;
+      height: 740px;
+      border-radius: 30px 30px 0 0;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .auth-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Right: form */
+    .auth-form-wrap {
+      flex: 1;
+      padding-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 440px;
+    }
+
+    .auth-title {
+      font-size: 42px;
+      font-weight: 700;
+      color: #000;
+      text-align: center;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .auth-input {
+      width: 100%;
+      height: 52px;
+      background: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0 16px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      color: #000;
+      outline: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .auth-input:focus { box-shadow: 0 0 0 2px var(--primary); }
+    .auth-input::placeholder { color: var(--gray-400); }
+
+    .input-group { position: relative; }
+    .input-eye {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--gray-400);
+      font-size: 16px;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .forgot-row {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 14px;
+      color: #000;
+      gap: 4px;
+    }
+    .forgot-row a {
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .forgot-row a:hover { text-decoration: underline; }
+
+    .btn-login {
+      width: 100%;
+      height: 52px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-login:hover { opacity: 0.88; }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: #000;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #ccc;
+    }
+
+    .social-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .btn-social {
+      flex: 1;
+      height: 54px;
+      background: #fff;
+      border: none;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .btn-social:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+    .btn-social img { width: 28px; height: 28px; object-fit: contain; }
+
+    .switch-auth {
+      text-align: center;
+      font-size: 15px;
+      color: #000;
+    }
+    .switch-auth a {
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .switch-auth a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <a href="index.html" class="navbar-logo">
+        <svg viewBox="0 0 30 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/>
+          <path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/>
+        </svg>
+        <span class="navbar-logo-text">IndoConcert</span>
+      </a>
+      <div class="navbar-links">
+        <a href="index.html">Beranda</a>
+        <a href="explore.html">Jelajahi</a>
+        <a href="fan-match.html">Cari Teman</a>
+        <a href="about.html">Tentang Kami</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="login.html" class="btn-masuk">Masuk</a>
+        <a href="register.html" class="btn-daftar">Daftar</a>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="auth-body">
+      <!-- Left: Concert Photo -->
+      <div class="auth-photo">
+        <img
+          src="https://www.figma.com/api/mcp/asset/53220b74-a959-4083-9fea-b66509f64095"
+          alt="Concert background"
+        />
+      </div>
+
+      <!-- Right: Login Form -->
+      <div class="auth-form-wrap">
+        <h1 class="auth-title">Kembali ke Panggung Musikmu</h1>
+
+        <input
+          type="email"
+          class="auth-input"
+          placeholder="Email"
+          autocomplete="email"
+        />
+
+        <div class="input-group">
+          <input
+            type="password"
+            class="auth-input"
+            id="passwordInput"
+            placeholder="Kata Sandi"
+            autocomplete="current-password"
+          />
+          <button class="input-eye" onclick="togglePassword()" aria-label="Tampilkan kata sandi">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="forgot-row">
+          <span>Lupa Kata Sandi?&nbsp;</span>
+          <a href="forgot-password.html">Klik Di Sini</a>
+        </div>
+
+        <button class="btn-login">Masuk</button>
+
+        <div class="divider">ATAU</div>
+
+        <div class="social-row">
+          <button class="btn-social" title="Masuk dengan Google">
+            <img src="https://www.figma.com/api/mcp/asset/50851bdb-436f-4a97-a240-418c10f9deb7" alt="Google" />
+          </button>
+          <button class="btn-social" title="Masuk dengan Twitter/X">
+            <img src="https://www.figma.com/api/mcp/asset/0cda1b96-9906-4535-a945-c546b779864e" alt="Twitter/X" />
+          </button>
+          <button class="btn-social" title="Masuk dengan Apple">
+            <img src="https://www.figma.com/api/mcp/asset/30b6607e-b975-412e-917d-942b9cc6aba0" alt="Apple" />
+          </button>
+        </div>
+
+        <p class="switch-auth">
+          Pengguna Baru?&nbsp;<a href="register.html">Daftar Sekarang</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const input = document.getElementById('passwordInput');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+</body>
+</html>

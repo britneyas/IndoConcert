@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TULUS: Tur Manusia 2023 — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    body { background: linear-gradient(175deg, rgba(112,140,255,0) 7%, #fff 46%); min-height: 100vh; }
+
+    /* HERO BANNER */
+    .concert-banner {
+      position: relative;
+      height: 360px;
+      overflow: hidden;
+      margin-top: 24px;
+    }
+    .concert-banner img { width: 100%; height: 100%; object-fit: cover; }
+    .concert-banner-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 60%);
+    }
+
+    /* CONCERT INFO */
+    .concert-info-section {
+      display: grid;
+      grid-template-columns: 600px 1fr;
+      gap: 40px;
+      padding: 0 80px 40px;
+      margin-top: -60px;
+      position: relative;
+      z-index: 10;
+    }
+    .concert-poster {
+      border-radius: 8px;
+      overflow: hidden;
+      height: 280px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .concert-poster img { width: 100%; height: 100%; object-fit: cover; }
+
+    .concert-details { padding-top: 72px; }
+    .concert-title { font-size: 40px; font-weight: 700; color: #000; margin-bottom: 16px; }
+    .concert-meta-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 15px; font-weight: 500; color: #333;
+      margin-bottom: 10px; line-height: 1.5;
+    }
+    .concert-meta-item svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
+
+    .ticket-available-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; border-radius: 8px; padding: 16px 20px;
+      margin-top: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .ticket-available-text { font-size: 15px; font-weight: 500; color: #000; }
+    .btn-beli {
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 8px;
+      padding: 10px 24px; font-size: 15px; font-weight: 500;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: opacity 0.2s; text-decoration: none;
+    }
+    .btn-beli:hover { opacity: 0.88; }
+
+    /* DETAIL ACARA */
+    .detail-section { padding: 32px 80px; }
+    .detail-section h2 { font-size: 26px; font-weight: 700; color: #000; margin-bottom: 20px; }
+    .divider-line { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+
+    .detail-grid { display: grid; grid-template-columns: 1fr 420px; gap: 32px; }
+    .info-penting {
+      background: #e3e8ff; border-radius: 8px; padding: 20px 28px;
+    }
+    .info-penting h3 { font-size: 20px; font-weight: 700; color: #000; margin-bottom: 12px; }
+    .info-penting ul { list-style: disc; padding-left: 20px; }
+    .info-penting ul li { font-size: 17px; font-weight: 500; color: #333; margin-bottom: 6px; line-height: 1.5; }
+
+    .harga-panel {
+      background: #e3e8ff; border-radius: 8px; padding: 24px;
+    }
+    .harga-panel-inner { background: #fff; border-radius: 8px; padding: 20px; }
+    .harga-panel h3 { font-size: 18px; font-weight: 700; color: #000; margin-bottom: 12px; }
+    .harga-line { border: none; border-top: 1px solid #e5e7eb; margin: 10px 0; }
+    .harga-row {
+      display: flex; justify-content: space-between;
+      align-items: center; padding: 8px 0;
+    }
+    .harga-kategori { font-size: 18px; font-weight: 500; color: rgba(0,0,0,0.8); }
+    .harga-note { font-size: 12px; color: var(--gray-400); }
+    .harga-price { font-size: 18px; font-weight: 500; color: rgba(0,0,0,0.8); }
+    .harga-disclaimer { font-size: 12px; color: var(--gray-400); margin-top: 8px; line-height: 1.4; }
+
+    .event-desc {
+      font-size: 18px; font-weight: 500; color: #333;
+      line-height: 1.7; margin-top: 20px;
+    }
+
+    /* INFO LEBIH LANJUT */
+    .further-section { padding: 32px 80px 40px; }
+    .further-grid { display: grid; grid-template-columns: 1fr 420px; gap: 32px; }
+    .terms-panel { }
+    .terms-panel h2 { font-size: 22px; font-weight: 500; color: #333; margin-bottom: 16px; }
+    .terms-group { margin-bottom: 20px; }
+    .terms-group h4 { font-size: 18px; font-weight: 500; color: #333; margin-bottom: 8px; }
+    .terms-group ul { list-style: disc; padding-left: 24px; }
+    .terms-group ul li { font-size: 16px; font-weight: 500; color: #333; margin-bottom: 6px; line-height: 1.5; }
+
+    .lokasi-panel { background: #e3e8ff; border-radius: 8px; padding: 24px; }
+    .lokasi-panel-inner { background: #fff; border-radius: 8px; padding: 20px; }
+    .lokasi-panel h3 { font-size: 18px; font-weight: 700; color: var(--gray-600); margin-bottom: 12px; }
+    .lokasi-map {
+      width: 100%; height: 160px; border-radius: 8px;
+      background: var(--gray-100); overflow: hidden; margin-bottom: 10px;
+    }
+    .lokasi-map img { width: 100%; height: 100%; object-fit: cover; }
+    .lokasi-address { font-size: 12px; color: var(--gray-400); margin-bottom: 10px; }
+    .lokasi-actions { display: flex; gap: 12px; }
+    .btn-lokasi {
+      width: 36px; height: 36px; border-radius: 9999px;
+      background: var(--gray-100); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+
+    /* MUNGKIN SUKA */
+    .maybe-section { padding: 32px 80px 60px; }
+    .maybe-section h2 { font-size: 26px; font-weight: 700; color: #000; margin-bottom: 20px; }
+    .maybe-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .maybe-card {
+      background: #fff; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 10px 15px rgba(0,0,0,0.1);
+    }
+    .maybe-card img { width: 100%; height: 180px; object-fit: cover; }
+    .maybe-card-body { padding: 14px 18px; }
+    .maybe-card-title { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+    .maybe-card-date { font-size: 14px; color: var(--gray-600); margin-bottom: 4px; }
+    .maybe-card-venue { font-size: 14px; color: var(--gray-600); display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
+    .maybe-card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .maybe-price { font-size: 16px; font-weight: 700; color: var(--primary); }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <nav class="navbar">
+      <a href="index.html" class="navbar-logo">
+        <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
+        <span class="navbar-logo-text">IndoConcert</span>
+      </a>
+      <div class="navbar-links">
+        <a href="index.html">Beranda</a>
+        <a href="explore.html">Jelajahi</a>
+        <a href="fan-match.html">Cari Teman</a>
+        <a href="about.html">Tentang Kami</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="login.html" class="btn-masuk">Masuk</a>
+        <a href="register.html" class="btn-daftar">Daftar</a>
+      </div>
+    </nav>
+
+    <!-- BANNER -->
+    <div class="concert-banner">
+      <img src="https://www.figma.com/api/mcp/asset/4ab18ffc-ba7e-4e76-8759-1ada154c6dda" alt="Concert Banner" />
+      <div class="concert-banner-overlay"></div>
+    </div>
+
+    <!-- CONCERT INFO -->
+    <div class="concert-info-section">
+      <div class="concert-poster">
+        <img src="https://www.figma.com/api/mcp/asset/e63a7118-baf7-43a9-85c9-5a45b703d885" alt="TULUS: Tur Manusia 2023" />
+      </div>
+      <div class="concert-details">
+        <div class="concert-title">TULUS: Tur Manusia 2023</div>
+        <div class="concert-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Bali Nusa Dua Convention Center, Kawasan Pariwisata Nusa Dua Lot NW/1, Benoa, Kec. Kuta Sel., Kabupaten Badung, Bali 80363
+        </div>
+        <div class="concert-meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          1 Februari 2023, 15:00 - 23:00 WIB
+        </div>
+        <div class="ticket-available-row">
+          <span class="ticket-available-text">Tersedia sekarang, pilih kursi mu!</span>
+          <a href="booking.html" class="btn-beli">Beli Tiket</a>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider-line" style="margin: 0 80px;" />
+
+    <!-- DETAIL ACARA -->
+    <div class="detail-section">
+      <h2>Detail Acara</h2>
+      <div class="detail-grid">
+        <div>
+          <div class="info-penting">
+            <h3>Info Penting</h3>
+            <ul>
+              <li>Pintu dibuka 30 menit sebelum konser dimulai.</li>
+              <li>Pendatang terlambat hanya diperbolehkan masuk saat tepuk tangan atau jeda.</li>
+              <li>Tiket tidak dapat dikembalikan.</li>
+            </ul>
+          </div>
+          <div class="event-desc">
+            <p>Konser Tulus: Tur Manusia, menampilkan musisi muda lorem ipsum lorem ipsum lorem ipsum lorem ipsum.</p>
+            <p>Saksikan Konser Tulus: Tur Manusia 2023 - di Bali Nusa Dua Convention Center, Bali pada 21 Maret 2023.</p>
+            <p>Dapatkan tiket Anda di Indoconcert sekarang!</p>
+          </div>
+        </div>
+        <div class="harga-panel">
+          <div class="harga-panel-inner">
+            <h3>Kategori &amp; Harga</h3>
+            <hr class="harga-line" />
+            <div class="harga-row">
+              <div>
+                <div class="harga-kategori">VIP</div>
+                <div class="harga-note">*Gratis merchandise TULUS</div>
+              </div>
+              <div class="harga-price">IDR 2.XXX.XXX</div>
+            </div>
+            <div class="harga-row">
+              <div>
+                <div class="harga-kategori">Reguler</div>
+                <div class="harga-note">*Gratis kupon Cimoli</div>
+              </div>
+              <div class="harga-price">IDR 1.XXX.XXX</div>
+            </div>
+            <div class="harga-disclaimer">Harga dapat bervariasi dari jumlah yang diiklankan karena sudah termasuk pajak dan biaya lainnya.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider-line" style="margin: 0 80px;" />
+
+    <!-- INFO LEBIH LANJUT -->
+    <div class="further-section">
+      <h2>Info Lebih Lanjut</h2>
+      <div class="further-grid">
+        <div class="terms-panel">
+          <h2>Syarat &amp; Ketentuan</h2>
+          <div class="terms-group">
+            <h4>Umum</h4>
+            <ul>
+              <li>Dilarang membawa makanan atau minuman ke dalam aula.</li>
+              <li>Harap matikan ponsel Anda atau atur ke mode senyap.</li>
+              <li>Dilarang keras menggunakan senter saat mengambil foto atau merekam video.</li>
+              <li>Benda tajam atau senjata tidak diperbolehkan di dalam area acara.</li>
+              <li>Usia minimum yang disarankan untuk menghadiri konser adalah 4 tahun.</li>
+              <li>Anak-anak berusia 2 tahun ke atas wajib memiliki tiket sendiri.</li>
+            </ul>
+          </div>
+          <div class="terms-group">
+            <h4>E-Tiket</h4>
+            <ul>
+              <li>E-tiket tidak dapat ditukar dengan uang tunai.</li>
+              <li>E-tiket tidak dapat digabungkan dengan promosi lainnya.</li>
+            </ul>
+          </div>
+          <div class="terms-group">
+            <h4>PERHATIAN</h4>
+            <ul>
+              <li>Transaksi resmi di Indoconcert hanya berlaku untuk transaksi yang dilakukan melalui situs web Indoconcert.</li>
+              <li>Dalam hal ini, Indoconcert bertindak semata-mata sebagai agen penjualan tiket.</li>
+              <li>Terkait mekanisme pengembalian dana sepenuhnya tunduk pada kebijakan yang dikeluarkan oleh promotor.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="lokasi-panel">
+          <div class="lokasi-panel-inner">
+            <h3>Lokasi</h3>
+            <div class="lokasi-map">
+              <img src="https://www.figma.com/api/mcp/asset/aca4cae5-e7e2-484f-92cc-e7a4f17c6f5c" alt="Map" />
+            </div>
+            <div class="lokasi-address">Jl. Lorem Ipsum</div>
+            <div class="lokasi-actions">
+              <button class="btn-lokasi" title="Arah Lokasi">📍</button>
+              <button class="btn-lokasi" title="Lihat Peta">🗺️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider-line" style="margin: 0 80px;" />
+
+    <!-- MUNGKIN SUKA -->
+    <div class="maybe-section">
+      <h2>Kamu Mungkin Suka</h2>
+      <div class="maybe-grid">
+        <div class="maybe-card">
+          <img src="https://www.figma.com/api/mcp/asset/e5786271-0f85-4beb-bbea-1ead5a6607c2" alt="Raisa" />
+          <div class="maybe-card-body">
+            <div class="maybe-card-title">Raisa</div>
+            <div class="maybe-card-date">📅 20 Januari 2025</div>
+            <div class="maybe-card-venue">📍 ICE BSD</div>
+            <div class="maybe-card-footer">
+              <span class="maybe-price">Rp 350.000</span>
+              <a href="booking.html" class="btn-beli" style="font-size:13px;padding:8px 16px;">Beli Tiket</a>
+            </div>
+          </div>
+        </div>
+        <div class="maybe-card">
+          <img src="https://www.figma.com/api/mcp/asset/7454318f-f61d-4669-974e-b36f3be90c9d" alt="Efek Rumah Kaca" />
+          <div class="maybe-card-body">
+            <div class="maybe-card-title">Efek Rumah Kaca</div>
+            <div class="maybe-card-date">📅 25 Januari 2025</div>
+            <div class="maybe-card-venue">📍 Rolling Stone Cafe</div>
+            <div class="maybe-card-footer">
+              <span class="maybe-price">Rp 200.000</span>
+              <a href="booking.html" class="btn-beli" style="font-size:13px;padding:8px 16px;">Beli Tiket</a>
+            </div>
+          </div>
+        </div>
+        <div class="maybe-card">
+          <img src="https://www.figma.com/api/mcp/asset/cbb199e2-5cb6-40b6-bac1-241dbb382505" alt="Java Jazz" />
+          <div class="maybe-card-body">
+            <div class="maybe-card-title">Java Jazz Festival</div>
+            <div class="maybe-card-date">📅 28-30 Januari 2025</div>
+            <div class="maybe-card-venue">📍 JIExpo Kemayoran</div>
+            <div class="maybe-card-footer">
+              <span class="maybe-price">Rp 500.000</span>
+              <a href="booking.html" class="btn-beli" style="font-size:13px;padding:8px 16px;">Beli Tiket</a>
+            </div>
+          </div>
+        </div>
+        <div class="maybe-card">
+          <img src="https://www.figma.com/api/mcp/asset/fce79a87-9e80-4dbc-9e92-dfd2f31bfba4" alt="Malam K-Pop" />
+          <div class="maybe-card-body">
+            <div class="maybe-card-title">Malam K-Pop</div>
+            <div class="maybe-card-date">📅 5 Februari 2025</div>
+            <div class="maybe-card-venue">📍 Istora Senayan</div>
+            <div class="maybe-card-footer">
+              <span class="maybe-price">Rp 450.000</span>
+              <a href="booking.html" class="btn-beli" style="font-size:13px;padding:8px 16px;">Beli Tiket</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo">
+            <svg width="18" height="28" viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#fff"/></svg>
+            IndoConcert
+          </div>
+          <p>Platform terpercaya untuk booking tiket konser musik terbaik di Indonesia.</p>
+          <div class="footer-socials">
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.4 19.54C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#333"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Informasi</h4>
+          <ul><li><a href="#">Kontak</a></li><li><a href="about.html">Tentang Kami</a></li><li><a href="#">Karir</a></li><li><a href="#">Blog</a></li></ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul><li><a href="#">Syarat &amp; Ketentuan</a></li><li><a href="#">Kebijakan Privasi</a></li><li><a href="#">FAQ</a></li><li><a href="#">Bantuan</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2025 IndoConcert. Hak cipta dilindungi.</div>
+    </footer>
+  </div>
+</body>
+</html>

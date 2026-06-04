@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pratinjau Kursi 360° — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    body { background: linear-gradient(175deg, rgba(112,140,255,0) 7%, #fff 46%); min-height: 100vh; }
+
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 50;
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .vs-modal {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 0 18px 15px rgba(0,0,0,0.25);
+      width: 100%; max-width: 1200px;
+      max-height: 90vh; overflow-y: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* LEFT: booking form */
+    .vs-left { padding: 36px 40px; overflow-y: auto; }
+    .modal-concert-title { font-size: 32px; font-weight: 700; color: #000; margin-bottom: 14px; }
+    .modal-meta { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .modal-meta-item { display: flex; align-items: center; gap: 8px; font-size: 24px; font-weight: 500; color: var(--gray-600); }
+    .divider { border: none; border-top: 1px solid #e5e7eb; margin: 16px 0; }
+
+    .tiket-heading { font-size: 28px; font-weight: 700; color: #000; margin-bottom: 14px; }
+    .tiket-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+    .tiket-icon { width: 70px; height: 70px; background: #e3e8ff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+    .tiket-info { flex: 1; }
+    .tiket-name { font-size: 24px; font-weight: 500; color: #000; }
+    .tiket-desc { font-size: 16px; color: var(--gray-500); }
+    .tiket-link { font-size: 16px; color: var(--gray-600); text-decoration: underline; cursor: pointer; display: inline-block; }
+    .tiket-qty { display: flex; align-items: center; gap: 8px; }
+    .qty-btn { width: 34px; height: 34px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .qty-num { font-size: 24px; color: rgba(0,0,0,0.6); min-width: 24px; text-align: center; }
+    .tiket-price { font-size: 16px; color: rgba(0,0,0,0.6); min-width: 150px; text-align: right; }
+
+    .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0 8px; }
+    .summary-label { font-size: 24px; font-weight: 500; color: rgba(0,0,0,0.6); }
+    .summary-count { font-size: 28px; font-weight: 700; color: #000; }
+    .summary-total { font-size: 28px; font-weight: 700; color: #000; text-align: right; }
+    .btn-lanjut-bayar {
+      width: 100%; height: 70px;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 20px;
+      font-size: 26px; font-weight: 700;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      margin-top: 14px; transition: opacity 0.2s;
+    }
+    .btn-lanjut-bayar:hover { opacity: 0.88; }
+
+    /* RIGHT: 360 preview */
+    .vs-right {
+      position: relative;
+      border-radius: 0 20px 20px 0;
+      overflow: hidden;
+      min-height: 500px;
+    }
+    .vs-right-bg {
+      position: absolute; inset: 0;
+      border: 4px solid #dedee1;
+      border-radius: 0 20px 20px 0;
+      overflow: hidden;
+    }
+    .vs-right-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .vs-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+    .vs-title {
+      font-size: 38px; font-weight: 700;
+      color: #f0f0f0;
+      text-align: center;
+      line-height: 1.2;
+      max-width: 380px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .vs-rotate-icon {
+      width: 100px; height: 100px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 64px;
+      animation: spin360 4s linear infinite;
+      cursor: pointer;
+    }
+    @keyframes spin360 {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    .vs-nav {
+      display: flex; gap: 20px; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    }
+    .vs-nav-btn {
+      background: rgba(255,255,255,0.2); color: #fff;
+      border: none; border-radius: 8px;
+      width: 44px; height: 44px; font-size: 24px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s;
+    }
+    .vs-nav-btn:hover { background: rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body>
+  <!-- BACKGROUND (dimmed) -->
+  <div style="filter:blur(2px);opacity:0.6;pointer-events:none;">
+    <div class="page-wrapper">
+      <nav class="navbar">
+        <a href="index.html" class="navbar-logo">
+          <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
+          <span class="navbar-logo-text">IndoConcert</span>
+        </a>
+        <div class="navbar-links">
+          <a href="#">Beranda</a><a href="#">Jelajahi</a><a href="#">Cari Teman</a><a href="#">Tentang Kami</a>
+        </div>
+        <div class="navbar-actions">
+          <a href="login.html" class="btn-masuk">Masuk</a>
+          <a href="register.html" class="btn-daftar">Daftar</a>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop">
+    <div class="vs-modal">
+      <!-- LEFT: Booking -->
+      <div class="vs-left">
+        <div class="modal-concert-title">TULUS: Tur Manusia 2023</div>
+        <div class="modal-meta">
+          <div class="modal-meta-item">📍 Bali Nusa Dua Convention Center</div>
+          <div class="modal-meta-item">📅 1 Februari 2023, 15:00 - 23:00 WIB</div>
+        </div>
+        <div class="divider"></div>
+        <div class="tiket-heading">Tiket Tersedia</div>
+
+        <div class="tiket-row">
+          <div class="tiket-icon">🎫</div>
+          <div class="tiket-info">
+            <div class="tiket-name">VIP A</div>
+            <div class="tiket-desc">Kursi VIP + Gelang eksklusif</div>
+            <span class="tiket-link" style="color:var(--primary);font-weight:600;">← Sedang dilihat</span>
+          </div>
+          <div class="tiket-qty">
+            <button class="qty-btn" onclick="changeQty('vipa',-1)">−</button>
+            <span class="qty-num" id="qty-vipa">3</span>
+            <button class="qty-btn" onclick="changeQty('vipa',1)">+</button>
+          </div>
+          <div class="tiket-price">Rp. 2.000.000 / org</div>
+        </div>
+        <div class="tiket-row">
+          <div class="tiket-icon">🎫</div>
+          <div class="tiket-info">
+            <div class="tiket-name">VIP B</div>
+            <div class="tiket-desc">Kursi VIP + Gelang reguler</div>
+            <span class="tiket-link">lihat kategori kursi kamu</span>
+          </div>
+          <div class="tiket-qty">
+            <button class="qty-btn" onclick="changeQty('vipb',-1)">−</button>
+            <span class="qty-num" id="qty-vipb">0</span>
+            <button class="qty-btn" onclick="changeQty('vipb',1)">+</button>
+          </div>
+          <div class="tiket-price">Rp. 1.800.000 / org</div>
+        </div>
+        <div class="tiket-row">
+          <div class="tiket-icon">🎫</div>
+          <div class="tiket-info">
+            <div class="tiket-name">Regular A</div>
+            <div class="tiket-desc">Kursi Gelang reguler</div>
+            <span class="tiket-link">lihat kategori kursi kamu</span>
+          </div>
+          <div class="tiket-qty">
+            <button class="qty-btn" onclick="changeQty('reg',-1)">−</button>
+            <span class="qty-num" id="qty-reg">0</span>
+            <button class="qty-btn" onclick="changeQty('reg',1)">+</button>
+          </div>
+          <div class="tiket-price">Rp. 1.000.000 / org</div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="summary-row">
+          <div>
+            <div class="summary-label">Jumlah tiket</div>
+            <div class="summary-count" id="total-qty">3 tiket</div>
+          </div>
+          <div>
+            <div class="summary-label" style="text-align:right;">Total</div>
+            <div class="summary-total" id="total-price">Rp. 6.000.000,-</div>
+          </div>
+        </div>
+        <button class="btn-lanjut-bayar" onclick="alert('Lanjut ke pembayaran...')">
+          Lanjut pembayaran
+        </button>
+        <p style="text-align:center;margin-top:12px;">
+          <a href="booking.html" style="color:var(--gray-500);font-size:13px;">← Kembali ke pilih tiket</a>
+        </p>
+      </div>
+
+      <!-- RIGHT: 360 Preview -->
+      <div class="vs-right">
+        <div class="vs-right-bg">
+          <img src="https://www.figma.com/api/mcp/asset/7683bf79-6cdf-4f5e-ae9c-f17c06dae510" alt="Stadium 360" />
+        </div>
+        <div class="vs-overlay">
+          <div class="vs-title">Pratinjau kursimu secara 360°</div>
+          <div class="vs-rotate-icon" title="Klik untuk putar">🔄</div>
+        </div>
+        <div class="vs-nav">
+          <button class="vs-nav-btn">◀</button>
+          <button class="vs-nav-btn">▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const prices = { vipa: 2000000, vipb: 1800000, reg: 1000000 };
+    const qtys   = { vipa: 3, vipb: 0, reg: 0 };
+    function changeQty(key, delta) {
+      qtys[key] = Math.max(0, qtys[key] + delta);
+      document.getElementById('qty-' + key).textContent = qtys[key];
+      const total = Object.keys(qtys).reduce((s,k) => s + qtys[k]*prices[k], 0);
+      const count = Object.values(qtys).reduce((s,v) => s+v, 0);
+      document.getElementById('total-qty').textContent  = count + ' tiket';
+      document.getElementById('total-price').textContent = 'Rp. ' + total.toLocaleString('id-ID') + ',-';
+    }
+  </script>
+</body>
+</html>
