@@ -1,246 +1,229 @@
 ﻿<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Beli Tiket — IndoConcert</title>
-  <link rel="stylesheet" href="css/shared.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pilih Tiket — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css"/>
   <style>
-    body { background: linear-gradient(175deg, rgba(112,140,255,0) 7%, #fff 46%); min-height: 100vh; }
-
-    /* MODAL OVERLAY */
-    .modal-backdrop {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.3);
-      z-index: 50;
-      display: flex; align-items: center; justify-content: center;
-      padding: 40px 20px;
-    }
-
-    .booking-modal {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 0 18px 15px rgba(0,0,0,0.25);
-      width: 100%; max-width: 1100px;
-      max-height: 90vh; overflow-y: auto;
-      padding: 40px 48px;
-    }
-
-    /* CONCERT HEADER */
-    .modal-concert-title {
-      font-size: 36px; font-weight: 700; color: #000;
-      margin-bottom: 16px;
-    }
-    .modal-meta { display: flex; gap: 32px; margin-bottom: 20px; }
-    .modal-meta-item {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 28px; font-weight: 500; color: var(--gray-600);
-    }
-    .modal-meta-item img { width: 36px; height: 36px; object-fit: contain; }
-    .divider { border: none; border-top: 1px solid #e5e7eb; margin: 20px 0; }
-
-    /* TIKET */
-    .tiket-heading { font-size: 32px; font-weight: 700; color: #000; margin-bottom: 20px; }
-
-    .tiket-row {
-      display: flex; align-items: center;
-      gap: 16px; padding: 16px 0;
-      border-bottom: 1px solid #f3f4f6;
-    }
-    .tiket-icon {
-      width: 80px; height: 80px; background: #e3e8ff;
-      border-radius: 16px; display: flex; align-items: center; justify-content: center;
-      font-size: 32px; flex-shrink: 0;
-    }
-    .tiket-info { flex: 1; }
-    .tiket-name { font-size: 28px; font-weight: 500; color: #000; }
-    .tiket-desc { font-size: 18px; color: var(--gray-500); margin-top: 2px; }
-    .tiket-link {
-      font-size: 18px; color: var(--gray-600);
-      text-decoration: underline; cursor: pointer;
-      margin-top: 4px; display: inline-block;
-    }
-    .tiket-link:hover { color: var(--primary); }
-    .tiket-qty {
-      display: flex; align-items: center; gap: 12px;
-    }
-    .qty-btn {
-      width: 38px; height: 38px; background: var(--primary);
-      color: #fff; border: none; border-radius: 8px;
-      font-size: 20px; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity 0.2s;
-    }
-    .qty-btn:hover { opacity: 0.85; }
-    .qty-num { font-size: 28px; color: rgba(0,0,0,0.6); min-width: 28px; text-align: center; }
-    .tiket-price {
-      font-size: 20px; color: rgba(0,0,0,0.6);
-      min-width: 180px; text-align: right;
-    }
-
-    /* SUMMARY */
-    .summary-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 0 8px;
-    }
-    .summary-label { font-size: 28px; font-weight: 500; color: rgba(0,0,0,0.6); }
-    .summary-count { font-size: 32px; font-weight: 700; color: #000; }
-    .summary-total { font-size: 32px; font-weight: 700; color: #000; text-align: right; }
-
-    .btn-lanjut-bayar {
-      width: 100%; height: 80px;
-      background: var(--primary); color: #fff;
-      border: none; border-radius: 20px;
-      font-size: 32px; font-weight: 700;
-      cursor: pointer; font-family: 'Inter', sans-serif;
-      margin-top: 16px; transition: opacity 0.2s;
-    }
-    .btn-lanjut-bayar:hover { opacity: 0.88; }
-
-    /* BACKGROUND CONTENT (dimmed) */
-    .bg-content {
-      filter: blur(2px);
-      pointer-events: none;
-      opacity: 0.7;
-    }
-    .concert-banner { height: 300px; overflow: hidden; }
-    .concert-banner img { width: 100%; height: 100%; object-fit: cover; }
+    body{background:linear-gradient(175deg,rgba(112,140,255,.06) 0%,#fff 50%);min-height:100vh;}
+    .page-bg{filter:blur(2px) brightness(.85);position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+    .page-bg-nav{background:rgba(255,255,255,.6);border-radius:89px;margin:49px auto 0;max-width:1281px;padding:22px 39px;display:flex;gap:16px;align-items:center;box-shadow:0 0 24.8px rgba(0,0,0,.25);}
+    .page-bg-body{padding:40px 112px;}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:10;}
+    .booking-modal{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:24px;}
+    .modal-box{background:#fff;border-radius:22px;box-shadow:0 4px 32px rgba(0,0,0,.22);width:min(1100px,96vw);max-height:92vh;overflow:hidden;display:flex;flex-direction:column;}
+    .modal-header{padding:20px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}
+    .modal-concert-title{font-size:24px;font-weight:700;color:#000;margin-bottom:6px;}
+    .modal-meta{font-size:14px;color:#6b7280;margin-bottom:3px;}
+    .modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:#555;padding:0;}
+    .step-tabs{display:flex;padding:14px 28px 0;border-bottom:2px solid #f3f4f6;flex-shrink:0;}
+    .step-tab{display:flex;align-items:center;gap:7px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;color:#9ca3af;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif;}
+    .step-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+    .step-tab.done{color:#22c55e;border-bottom-color:#22c55e;}
+    .step-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;background:#e5e7eb;color:#6b7280;flex-shrink:0;}
+    .step-tab.active .step-num{background:var(--primary);color:#fff;}
+    .step-tab.done .step-num{background:#22c55e;color:#fff;}
+    .modal-body{flex:1;overflow-y:auto;}
+    .tab-panel{display:none;padding:20px 28px;}
+    .tab-panel.active{display:block;}
+    .tix-row{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid #f3f4f6;}
+    .tix-row:last-child{border-bottom:none;}
+    .tix-icon-box{width:66px;height:66px;background:#e3e8ff;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+    .tix-info{flex:1;}
+    .tix-name{font-size:17px;font-weight:600;color:#111;}
+    .tix-desc{font-size:12px;color:#9ca3af;margin-top:2px;}
+    .tix-preview-link{font-size:12px;color:#516bff;text-decoration:underline;cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;padding:0;margin-top:4px;display:block;}
+    .qty-ctrl{display:flex;align-items:center;gap:10px;}
+    .qty-btn{width:32px;height:32px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .qty-btn:hover{opacity:.85;}
+    .qty-num{font-size:20px;font-weight:600;color:rgba(0,0,0,.7);min-width:24px;text-align:center;}
+    .tix-price{font-size:14px;color:rgba(0,0,0,.55);min-width:150px;text-align:right;white-space:nowrap;}
+    .seat-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    .venue-360{position:relative;border-radius:16px;overflow:hidden;height:310px;border:3px solid #dedee1;box-shadow:0 4px 20px rgba(0,0,0,.2);}
+    .venue-360 img{width:100%;height:100%;object-fit:cover;}
+    .venue-overlay{position:absolute;inset:0;background:rgba(0,0,0,.22);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+    .venue-label{font-size:20px;font-weight:700;color:#fff;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.4);}
+    .rotate-icon{font-size:42px;animation:spin 4s linear infinite;}
+    @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+    .seat-arrows{display:flex;gap:8px;}
+    .seat-arrow-btn{background:rgba(255,255,255,.25);color:#fff;border:none;border-radius:8px;width:38px;height:38px;font-size:18px;cursor:pointer;backdrop-filter:blur(4px);}
+    .seat-cards{display:flex;flex-direction:column;gap:10px;}
+    .seat-card{background:#f8faff;border:1.5px solid #e0e7ff;border-radius:14px;padding:14px 16px;}
+    .seat-card.hl{background:linear-gradient(135deg,#0c194e,#37457d);border-color:#0c194e;}
+    .seat-card-label{font-size:11px;font-weight:700;color:#516bff;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+    .seat-card.hl .seat-card-label{color:rgba(255,255,255,.65);}
+    .seat-card-val{font-size:16px;font-weight:700;color:#111;}
+    .seat-card.hl .seat-card-val{color:#fff;}
+    .seat-card-sub{font-size:12px;color:#6b7280;margin-top:2px;}
+    .seat-card.hl .seat-card-sub{color:rgba(255,255,255,.65);}
+    .summary-bar{padding:14px 28px;background:#fafafa;border-top:1px solid #f3f4f6;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;}
+    .sum-count{font-size:14px;color:#374151;}
+    .sum-total{font-size:22px;font-weight:700;color:var(--primary);}
+    .sum-actions{display:flex;gap:10px;align-items:center;}
+    .btn-prev{background:none;border:1.5px solid #e5e7eb;border-radius:12px;padding:11px 22px;font-size:14px;font-weight:600;color:#374151;cursor:pointer;font-family:'Inter',sans-serif;}
+    .btn-prev:hover{border-color:var(--primary);color:var(--primary);}
+    .btn-next{background:var(--primary);color:#fff;border:none;border-radius:12px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+    .btn-next:hover{opacity:.88;}
+    .btn-pay{background:#22c55e;color:#fff;border:none;border-radius:12px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:none;display:inline-block;}
+    .btn-pay:hover{opacity:.88;}
   </style>
 </head>
 <body>
-  <!-- BACKGROUND (dimmed concert detail) -->
-  <div class="bg-content">
-    <div class="page-wrapper">
-      <nav class="navbar">
-        <a href="index.html" class="navbar-logo">
-           <span class="navbar-logo-text">IndoConcert</span>
-        </a>
-        <div class="navbar-links">
-          <a href="index.html">Beranda</a>
-          <a href="explore.html">Jelajahi</a>
-          <a href="fan-match.html">Cari Teman</a>
-          <a href="about.html">Tentang Kami</a>
-          
+<div class="page-bg">
+  <div class="page-bg-nav">
+    <span style="font-family:Poppins,sans-serif;font-weight:700;font-size:22px;color:#0c194e;">IndoConcert</span>
+    <span style="flex:1;font-size:15px;color:#555;margin-left:40px;">Beranda · Jelajahi · Cari Teman · Tentang Kami</span>
+  </div>
+  <div class="page-bg-body">
+    <div style="font-size:13px;color:#9ca3af;margin-bottom:10px;">Detail Konser &rarr; Pilih Tiket</div>
+    <div style="font-size:30px;font-weight:700;">TULUS: Tur Manusia 2023</div>
+    <div style="font-size:14px;color:#6b7280;margin-top:6px;">&nbsp;Bali Nusa Dua Convention Center &middot; 1 Februari 2023</div>
+  </div>
+</div>
+<div class="modal-backdrop" onclick="window.location='concert-detail.html'"></div>
+<div class="booking-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-concert-title">TULUS: Tur Manusia 2023</div>
+        <div class="modal-meta">&#128205; Bali Nusa Dua Convention Center</div>
+        <div class="modal-meta">&#128197; 1 Februari 2023, 15:00 &ndash; 23:00 WIB</div>
+      </div>
+      <button class="modal-close" onclick="window.location='concert-detail.html'">&#10005;</button>
+    </div>
+    <div class="step-tabs">
+      <button class="step-tab active" id="stab-ticket" onclick="goStep('ticket')"><span class="step-num">1</span> Pilih Tiket</button>
+      <button class="step-tab" id="stab-seat" onclick="goStep('seat')"><span class="step-num">2</span> Preview Kursi 360&deg;</button>
+    </div>
+    <div class="modal-body">
+      <div class="tab-panel active" id="panel-ticket">
+        <div class="tix-row">
+          <div class="tix-icon-box">&#127915;</div>
+          <div class="tix-info">
+            <div class="tix-name">VIP A</div>
+            <div class="tix-desc">Kursi VIP + Gelang eksklusif &middot; *Gratis merchandise TULUS</div>
+            <button class="tix-preview-link" onclick="goStep('seat')">Lihat posisi kursi di 360&deg; &rarr;</button>
+          </div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty('vipa',-1)">&#8722;</button>
+            <span class="qty-num" id="qty-vipa">3</span>
+            <button class="qty-btn" onclick="changeQty('vipa',1)">+</button>
+          </div>
+          <div class="tix-price">Rp 2.000.000 / org</div>
         </div>
-        <div class="navbar-actions">
-          <a href="login.html" class="btn-masuk">Masuk</a>
-          <a href="register.html" class="btn-daftar">Daftar</a>
+        <div class="tix-row">
+          <div class="tix-icon-box">&#127915;</div>
+          <div class="tix-info">
+            <div class="tix-name">VIP B</div>
+            <div class="tix-desc">Kursi VIP + Gelang reguler</div>
+            <button class="tix-preview-link" onclick="goStep('seat')">Lihat posisi kursi di 360&deg; &rarr;</button>
+          </div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty('vipb',-1)">&#8722;</button>
+            <span class="qty-num" id="qty-vipb">0</span>
+            <button class="qty-btn" onclick="changeQty('vipb',1)">+</button>
+          </div>
+          <div class="tix-price">Rp 1.800.000 / org</div>
         </div>
-      </nav>
-      <div class="concert-banner">
-        <img src="images/4ab18ffc-ba7e-4e76-8759-1ada154c6dda.png" alt="Banner" />
+        <div class="tix-row">
+          <div class="tix-icon-box">&#127915;</div>
+          <div class="tix-info">
+            <div class="tix-name">Regular A</div>
+            <div class="tix-desc">Kursi Gelang reguler &middot; *Gratis kupon Cimoli</div>
+            <button class="tix-preview-link" onclick="goStep('seat')">Lihat posisi kursi di 360&deg; &rarr;</button>
+          </div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty('reg',-1)">&#8722;</button>
+            <span class="qty-num" id="qty-reg">0</span>
+            <button class="qty-btn" onclick="changeQty('reg',1)">+</button>
+          </div>
+          <div class="tix-price">Rp 1.000.000 / org</div>
+        </div>
+      </div>
+      <div class="tab-panel" id="panel-seat">
+        <div class="seat-grid">
+          <div>
+            <div class="venue-360">
+              <img src="https://www.figma.com/api/mcp/asset/7683bf79-6cdf-4f5e-ae9c-f17c06dae510" alt="360 View"/>
+              <div class="venue-overlay">
+                <div class="venue-label">Seksi A &middot; Baris 1</div>
+                <div class="rotate-icon">&#128260;</div>
+                <div class="seat-arrows">
+                  <button class="seat-arrow-btn">&#9664;</button>
+                  <button class="seat-arrow-btn">&#9654;</button>
+                </div>
+              </div>
+            </div>
+            <p style="font-size:12px;color:#9ca3af;text-align:center;margin-top:6px;">Klik panah untuk memutar pandangan 360&deg;</p>
+          </div>
+          <div class="seat-cards">
+            <div class="seat-card hl">
+              <div class="seat-card-label">Kursi Kamu</div>
+              <div class="seat-card-val">Seksi A &middot; Baris 1 &middot; Kursi 13</div>
+              <div class="seat-card-sub">VIP A &mdash; Gelang Eksklusif &#10003;</div>
+            </div>
+            <div class="seat-card">
+              <div class="seat-card-label">Jarak ke Panggung</div>
+              <div class="seat-card-val">~12 meter</div>
+              <div class="seat-card-sub">Pandangan frontal optimal</div>
+            </div>
+            <div class="seat-card">
+              <div class="seat-card-label">Pintu Masuk</div>
+              <div class="seat-card-val">Gate B2</div>
+              <div class="seat-card-sub">Toilet &amp; Loker dalam 50m</div>
+            </div>
+            <div class="seat-card">
+              <div class="seat-card-label">Tips</div>
+              <div class="seat-card-sub" style="font-size:13px;color:#374151;line-height:1.7;">&#10003; Datang 30 mnt lebih awal &nbsp; &#10003; Bawa identitas asli &nbsp; &#10003; QR dikirim via email</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="summary-bar">
+      <div>
+        <div class="sum-count" id="sum-count">3 tiket dipilih</div>
+        <div class="sum-total" id="sum-total">Rp 6.000.000</div>
+      </div>
+      <div class="sum-actions">
+        <button class="btn-prev" id="btn-prev" onclick="prevStep()" style="display:none;">&larr; Kembali</button>
+        <button class="btn-next" id="btn-next" onclick="nextStep()">Cek Preview Kursi &rarr;</button>
+        <a href="payment.html" class="btn-pay" id="btn-pay" style="display:none;">&#128179; Lanjut Pembayaran</a>
       </div>
     </div>
   </div>
-
-  <!-- MODAL -->
-  <div class="modal-backdrop">
-    <div class="booking-modal">
-      <div class="modal-concert-title">TULUS: Tur Manusia 2023</div>
-      <div class="modal-meta">
-        <div class="modal-meta-item">
-          <img src="images/loc.png" alt="loc" />
-          Bali Nusa Dua Convention Center
-        </div>
-        <div class="modal-meta-item">
-          <img src="images/cal.png" alt="cal" />
-          1 Februari 2023, 15:00 - 23:00 WIB
-        </div>
-      </div>
-
-      <div class="divider"></div>
-      <div class="tiket-heading">Tiket Tersedia</div>
-
-      <!-- VIP A -->
-      <div class="tiket-row">
-        <div class="tiket-icon">🎫</div>
-        <div class="tiket-info">
-          <div class="tiket-name">VIP A</div>
-          <div class="tiket-desc">Kursi VIP + Gelang eksklusif</div>
-          <a href="virtual-seat.html" class="tiket-link">lihat kategori kursi kamu</a>
-        </div>
-        <div class="tiket-qty">
-          <button class="qty-btn" onclick="changeQty('vipa', -1)">−</button>
-          <span class="qty-num" id="qty-vipa">3</span>
-          <button class="qty-btn" onclick="changeQty('vipa', 1)">+</button>
-        </div>
-        <div class="tiket-price">Rp. 2.000.000 / org</div>
-      </div>
-
-      <!-- VIP B -->
-      <div class="tiket-row">
-        <div class="tiket-icon">🎫</div>
-        <div class="tiket-info">
-          <div class="tiket-name">VIP B</div>
-          <div class="tiket-desc">Kursi VIP + Gelang reguler</div>
-          <a href="virtual-seat.html" class="tiket-link">lihat kategori kursi kamu</a>
-        </div>
-        <div class="tiket-qty">
-          <button class="qty-btn" onclick="changeQty('vipb', -1)">−</button>
-          <span class="qty-num" id="qty-vipb">0</span>
-          <button class="qty-btn" onclick="changeQty('vipb', 1)">+</button>
-        </div>
-        <div class="tiket-price">Rp. 1.800.000 / org</div>
-      </div>
-
-      <!-- Regular A -->
-      <div class="tiket-row">
-        <div class="tiket-icon">🎫</div>
-        <div class="tiket-info">
-          <div class="tiket-name">Regular A</div>
-          <div class="tiket-desc">Kursi Gelang reguler</div>
-          <a href="virtual-seat.html" class="tiket-link">lihat kategori kursi kamu</a>
-        </div>
-        <div class="tiket-qty">
-          <button class="qty-btn" onclick="changeQty('reg', -1)">−</button>
-          <span class="qty-num" id="qty-reg">0</span>
-          <button class="qty-btn" onclick="changeQty('reg', 1)">+</button>
-        </div>
-        <div class="tiket-price">Rp. 1.000.000 / org</div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="summary-row">
-        <div>
-          <div class="summary-label">Jumlah tiket</div>
-          <div class="summary-count" id="total-qty">3 tiket</div>
-        </div>
-        <div>
-          <div class="summary-label" style="text-align:right;">Total</div>
-          <div class="summary-total" id="total-price">Rp. 6.000.000,-</div>
-        </div>
-      </div>
-
-      <button class="btn-lanjut-bayar" onclick="window.location.href='payment.html'">
-        Lanjut pembayaran
-      </button>
-
-      <p style="text-align:center;margin-top:16px;">
-        <a href="concert-detail.html" style="color:var(--gray-500);font-size:14px;">← Kembali ke detail konser</a>
-      </p>
-    </div>
-  </div>
-
-  <script>
-    const prices = { vipa: 2000000, vipb: 1800000, reg: 1000000 };
-    const qtys   = { vipa: 3, vipb: 0, reg: 0 };
-
-    function changeQty(key, delta) {
-      qtys[key] = Math.max(0, qtys[key] + delta);
-      document.getElementById('qty-' + key).textContent = qtys[key];
-      updateSummary();
-    }
-
-    function updateSummary() {
-      const total = Object.keys(qtys).reduce((s, k) => s + qtys[k] * prices[k], 0);
-      const count = Object.values(qtys).reduce((s, v) => s + v, 0);
-      document.getElementById('total-qty').textContent  = count + ' tiket';
-      document.getElementById('total-price').textContent = 'Rp. ' + total.toLocaleString('id-ID') + ',-';
-    }
-  </script>
+</div>
+<script>
+const prices={vipa:2000000,vipb:1800000,reg:1000000};
+const qtys={vipa:3,vipb:0,reg:0};
+function changeQty(k,d){qtys[k]=Math.max(0,qtys[k]+d);document.getElementById('qty-'+k).textContent=qtys[k];updateSummary();}
+function updateSummary(){
+  var tot=Object.keys(qtys).reduce(function(s,k){return s+qtys[k]*prices[k];},0);
+  var cnt=Object.values(qtys).reduce(function(s,v){return s+v;},0);
+  document.getElementById('sum-count').textContent=cnt+' tiket dipilih';
+  document.getElementById('sum-total').textContent='Rp '+tot.toLocaleString('id-ID');
+}
+function goStep(s){
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('panel-'+s).classList.add('active');
+  document.querySelectorAll('.step-tab').forEach(function(t){t.classList.remove('active','done');});
+  if(s==='ticket'){
+    document.getElementById('stab-ticket').classList.add('active');
+    document.getElementById('btn-prev').style.display='none';
+    document.getElementById('btn-next').style.display='inline-block';
+    document.getElementById('btn-pay').style.display='none';
+  } else {
+    document.getElementById('stab-ticket').classList.add('done');
+    document.getElementById('stab-seat').classList.add('active');
+    document.getElementById('btn-prev').style.display='inline-block';
+    document.getElementById('btn-next').style.display='none';
+    document.getElementById('btn-pay').style.display='inline-block';
+  }
+}
+function nextStep(){goStep('seat');}
+function prevStep(){goStep('ticket');}
+updateSummary();
+</script>
 </body>
 </html>
-
-
-

@@ -73,8 +73,7 @@
 <div class="page-wrapper">
   <nav class="navbar">
     <a href="index.html" class="navbar-logo">
-      <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
-      <span class="navbar-logo-text">IndoConcert</span>
+     <span class="navbar-logo-text">IndoConcert</span>
     </a>
     <div class="navbar-links">
       <a href="index.html">Beranda</a>
@@ -89,54 +88,7 @@
     </div>
   </nav>
 
-  <div class="page-wrap">
-    <div class="back-nav"><a href="profile.html#tickets">← Kembali ke Profil</a></div>
-    <div class="tickets-header">
-      <div class="tickets-title">Tiket Saya</div>
-    </div>
-    <div class="tab-row">
-      <button class="tab-btn active">Tiket Aktif</button>
-      <button class="tab-btn blue">Riwayat</button>
-    </div>
-
-    <!-- Dimmed ticket card -->
-    <div class="ticket-card" style="filter:brightness(.85);">
-      <div class="ticket-poster">
-        <img src="https://www.figma.com/api/mcp/asset/766b5112-f90a-480a-9d88-20d1ccfe4366" alt="Nadin Amizah"/>
-      </div>
-      <div class="ticket-info">
-        <div class="ticket-name">Nadin Amizah</div>
-        <div class="ticket-meta">📅 15 Desember 2026</div>
-        <div class="ticket-meta">📍 Tennis Indoor Senayan</div>
-        <div class="ticket-meta">🎫 Pesanan #571928</div>
-      </div>
-      <div class="ticket-divider"></div>
-      <div style="padding:16px;">
-        <div style="color:#4b5563;font-size:11px;">BAGIAN: <b>A</b></div>
-        <div style="color:#4b5563;font-size:11px;">BARIS: <b>1</b></div>
-        <div style="color:#4b5563;font-size:11px;">KURSI: <b>13</b></div>
-      </div>
-      <div class="ticket-qr-zone">
-        <img class="qr-img" src="https://www.figma.com/api/mcp/asset/727656e0-88a9-42a5-adc9-6e57886ece96" alt="QR"/>
-        <div style="font-size:11px;color:#516bff;font-weight:700;margin-top:6px;">Acara mulai dalam</div>
-        <div style="font-size:13px;color:#333;">12 Hari 4 Jam</div>
-        <div style="font-size:11px;color:#516bff;font-weight:700;margin-top:4px;">Perkiraan Cuaca</div>
-        <div style="font-size:12px;color:#333;">🌤 28°C | Langit Cerah</div>
-      </div>
-      <div class="ticket-right">
-        <div class="density-badge">
-          <span class="live-dot">LIVE</span>
-          <span style="font-size:12px;color:#333;">Kepadatan Manusia</span>
-        </div>
-        <div style="font-size:13px;color:#333;">Sedang (46%)</div>
-        <div class="ticket-actions">
-          <button class="btn-view">Lihat Tiket</button>
-          <button class="btn-dl">Unduh</button>
-        </div>
-        <a href="route-map.html" class="btn-route" style="text-align:center;">Lihat Rute</a>
-      </div>
-    </div>
-  </div>
+  
 </div>
 
 <!-- MINI DENSITY POPUP -->
@@ -144,14 +96,45 @@
   <div class="density-popup">
     <button class="popup-close" onclick="closePopup()">✕</button>
     <div class="popup-title">Live Kepadatan Manusia</div>
-    <div class="popup-map">
-      <img src="https://www.figma.com/api/mcp/asset/2512c81f-4897-424d-aec4-f8d5cdf26f04" alt="Density Map"/>
-      <a href="density-map-full.html" class="popup-fullscreen">⛶ Perbesar</a>
+    <div style="
+background:#f7f8fc;
+padding:14px;
+border-radius:12px;
+margin-bottom:18px;
+">
+  <div style="font-size:13px;color:#666;">
+    Berdasarkan lokasi acara:
+  </div>
+
+  <div style="font-weight:600;margin-top:4px;">
+    Nadin Amizah Concert
+  </div>
+
+  <div style="font-size:13px;color:#666;margin-top:2px;">
+    Tennis Indoor Senayan • 15 Desember 2026
+  </div>
+  </div>
+      <div class="popup-map">
+        <img src="https://www.figma.com/api/mcp/asset/2512c81f-4897-424d-aec4-f8d5cdf26f04" alt="Density Map"/>
+        <a href="density-map-full.html" class="popup-fullscreen">⛶ Perbesar</a>
+      </div>
+      <div class="popup-stats">
+    <div style="margin-bottom:10px;">
+      👥 Kepadatan Saat Ini: <b>Sedang (46%)</b>
     </div>
-    <div class="popup-stats">
-      Rata-rata Kepadatan: <b>Sedang</b> (46%)<br>
-      Saran: <b>Datang sebelum 18:00</b>
+
+    <div style="margin-bottom:10px;">
+      🚶 Area Masuk Utama: <b>Ramai</b>
     </div>
+
+    <div style="margin-bottom:10px;">
+      🚗 Area Parkir: <b>Normal</b>
+    </div>
+
+    <div>
+      💡 Rekomendasi: Datang sebelum <b>18:00</b> untuk menghindari antrean panjang.
+    </div>
+  </div>
     <div class="popup-arrow"></div>
   </div>
 </div>

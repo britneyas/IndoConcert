@@ -25,7 +25,7 @@
     .msg-row { display:flex; align-items:flex-start; gap:12px; }
     .msg-row.user { flex-direction:row-reverse; }
 
-    .avatar { width:40px; height:40px; border-radius:50%; flex-shrink:0; overflow:hidden; background:#37457d; display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff; }
+    .avatar { width:40px; height:40px; border-radius:50%; flex-shrink:0; overflow:hidden; background:#f9f9f9; display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff; }
     .avatar img { width:100%; height:100%; object-fit:cover; }
 
     .bubble {
@@ -98,7 +98,6 @@
 <div class="page-wrapper">
   <nav class="navbar">
     <a href="index.html" class="navbar-logo">
-      <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
       <span class="navbar-logo-text">IndoConcert</span>
     </a>
     <div class="navbar-links">
@@ -123,7 +122,7 @@
         <!-- AI message 1 -->
         <div class="msg-row">
           <div class="avatar">
-            <img src="images/5e26c578-5c0a-4601-8f64-a8856fb14b2b" alt="AI"/>
+            <img src="images/Profile.png" alt="AI"/>
           </div>
           <div class="bubble">
             Hai! Beritahu konser apa yang akan kamu datangi dan vibes-nya, nanti aku rekomendasikan outfit yang cocok. ✨
@@ -141,7 +140,7 @@
         <!-- AI message 2 -->
         <div class="msg-row">
           <div class="avatar">
-            <img src="images/5e26c578-5c0a-4601-8f64-a8856fb14b2b" alt="AI"/>
+            <img src="images/Profile.png" alt="AI"/>
           </div>
           <div class="bubble">
             Baik! Suhunya sekitar 28°C dan kepadatan crowd sedang, jadi aku sarankan outfit yang ringan tapi tetap nyaman. 🌤
@@ -151,7 +150,7 @@
         <!-- AI message 3 with color swatches -->
         <div class="msg-row">
           <div class="avatar">
-            <img src="images/5e26c578-5c0a-4601-8f64-a8856fb14b2b" alt="AI"/>
+            <img src="images/Profile.png" alt="AI"/>
           </div>
           <div class="bubble">
             <div>Aku menemukan bahwa dresscode-nya adalah:</div>
@@ -166,26 +165,26 @@
         <!-- AI outfit recommendations -->
         <div class="msg-row">
           <div class="avatar">
-            <img src="images/ba675534-e3f5-41bd-b4a9-bf337b9bd1b6" alt="AI"/>
+            <img src="images/Profile.png" alt="AI"/>
           </div>
           <div class="bubble" style="max-width:100%;">
             <p>Berikut inspirasi gaya busana yang lengkap:</p>
             <p style="font-size:14px;color:#555;margin-bottom:10px;">Klik gambar di bawah ini untuk melihat tempat membeli item-item ini.</p>
             <div class="chat-outfits">
               <div class="chat-outfit-img">
-                <img src="images/f6b79d30-2f0d-4997-8b48-1eb7ac8debcf" alt="Dress"/>
+                <img src="images/f6b79d30-2f0d-4997-8b48-1eb7ac8debcf.png" alt="Dress"/>
                 <a href="https://shopee.co.id" target="_blank" title="Beli di Shopee"></a>
               </div>
               <div class="chat-outfit-img">
-                <img src="images/04aaf090-efa6-4df4-995b-5208941f36ea" alt="Shoes"/>
+                <img src="images/04aaf090-efa6-4df4-995b-5208941f36ea.png" alt="Shoes"/>
                 <a href="https://shopee.co.id" target="_blank" title="Beli di Shopee"></a>
               </div>
               <div class="chat-outfit-img">
-                <img src="images/aeff9ed4-9043-43bb-9416-5c801ed56103" alt="Bag"/>
+                <img src="images/image 22.png" alt="Bag"/>
                 <a href="https://shopee.co.id" target="_blank" title="Beli di Shopee"></a>
               </div>
               <div class="chat-outfit-img">
-                <img src="images/a4c2eb94-a970-4050-a489-50c3c0851a52" alt="Accessory"/>
+                <img src="images/image 23.png" alt="Accessory"/>
                 <a href="https://shopee.co.id" target="_blank" title="Beli di Shopee"></a>
               </div>
             </div>
@@ -205,7 +204,7 @@
 
       <!-- Input bar -->
       <div class="input-bar">
-        <button class="attach-btn" title="Lampirkan foto">📎</button>
+        <button class="attach-btn" title="Lampirkan foto">🗁</button>
         <input type="text" class="chat-input" id="chatInput" placeholder="Tanyakan apa saja tentang outfit, warna, atau budget…" onkeydown="if(event.key==='Enter')sendMessage()" />
         <button class="send-btn" onclick="sendMessage()" title="Kirim">➤</button>
       </div>
