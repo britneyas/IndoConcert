@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__figma__get_metadata",
+      "mcp__figma__get_design_context",
+      "Bash(not exist *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\britn\\\\OneDrive\\\\Documents\\\\IndoConcert\\\\concert-app\" -Recurse -File | Select-Object FullName, @{N='Size\\(KB\\)';E={[math]::Round\\($_.Length/1KB,1\\)}} | Format-Table -AutoSize)",
+      "PowerShell(New-Item *)",
+      "Bash(python *)"
+    ]
+  }
+}
