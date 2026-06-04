@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rute ke Lokasi — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <style>
+    body { background:linear-gradient(175deg,rgba(112,140,255,.06) 0%,#fff 50%); min-height:100vh; }
+    .backdrop { position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:40; }
+    .modal-outer { position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:30px; }
+
+    .route-modal {
+      background:#fff; border-radius:20px;
+      box-shadow:0 0 20px rgba(0,0,0,.15);
+      width:min(1108px,96vw); max-height:90vh; overflow:hidden;
+      position:relative; display:flex; flex-direction:column;
+    }
+    .modal-header { padding:20px 28px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #f3f4f6; }
+    .modal-title { font-size:22px; font-weight:700; color:#000; }
+    .modal-close { background:none; border:none; font-size:22px; cursor:pointer; color:#555; }
+
+    /* Map area */
+    .map-area { position:relative; flex:1; overflow:hidden; }
+    .map-img { width:100%; height:450px; object-fit:cover; }
+    .map-overlay-controls {
+      position:absolute; bottom:14px; right:14px;
+      display:flex; gap:8px;
+    }
+    .map-ctrl { background:rgba(255,255,255,.92); border:1px solid #ddd; border-radius:8px; padding:6px 12px; cursor:pointer; font-size:13px; font-weight:600; color:#333; box-shadow:0 2px 6px rgba(0,0,0,.15); }
+    .map-route-hint {
+      position:absolute; top:14px; left:50%; transform:translateX(-50%);
+      background:rgba(255,255,255,.95); border-radius:12px;
+      padding:10px 18px; box-shadow:0 4px 12px rgba(0,0,0,.2);
+      font-size:14px; color:#333; max-width:340px; text-align:center;
+    }
+    .route-duration { font-size:18px; font-weight:700; color:#37457d; }
+
+    /* Input fields */
+    .inputs-row { padding:16px 28px; display:flex; flex-direction:column; gap:10px; }
+    .route-input-wrap { display:flex; align-items:center; gap:10px; border:1.5px solid #000; border-radius:15px; padding:12px 16px; }
+    .route-pin { font-size:18px; width:20px; }
+    .route-input { flex:1; border:none; outline:none; font-size:16px; font-family:'Inter',sans-serif; color:#333; font-weight:300; }
+    .route-input::placeholder { color:#aaa; }
+
+    /* Footer row */
+    .modal-footer { padding:14px 28px; display:flex; align-items:center; justify-content:space-between; border-top:1px solid #f3f4f6; }
+    .btn-gmaps {
+      display:flex; align-items:center; gap:8px;
+      border:1.5px solid #000; border-radius:12px; padding:12px 20px;
+      font-size:15px; font-weight:700; color:#37457d;
+      text-decoration:none; background:#fff;
+      box-shadow:0 4px 4px rgba(0,0,0,.1); transition:all .2s;
+    }
+    .btn-gmaps:hover { background:#f0f4ff; }
+    .gmaps-icon { width:28px; height:28px; }
+    .btn-back-link { background:none; border:none; font-size:16px; color:var(--primary); cursor:pointer; font-family:'Inter',sans-serif; font-weight:500; text-decoration:underline; }
+
+    /* Transport modes */
+    .transport-row { display:flex; gap:8px; padding:0 28px 8px; }
+    .transport-btn {
+      display:flex; align-items:center; gap:5px;
+      border:1.5px solid #e5e7eb; border-radius:20px; padding:7px 14px;
+      font-size:13px; cursor:pointer; font-family:'Inter',sans-serif;
+      transition:all .2s; background:#fff;
+    }
+    .transport-btn.active { border-color:#37457d; background:#f0f2ff; color:#37457d; font-weight:600; }
+    .transport-btn:hover { border-color:#516bff; }
+  </style>
+</head>
+<body>
+<div class="backdrop" onclick="window.location='my-tickets-new.html'"></div>
+
+<!-- Dim bg -->
+<div style="filter:blur(2px);opacity:.4;pointer-events:none;position:fixed;inset:0;padding:80px;font-size:42px;font-weight:700;">Tiket Saya</div>
+
+<div class="modal-outer">
+  <div class="route-modal">
+    <div class="modal-header">
+      <div class="modal-title">Rute ke Lokasi</div>
+      <button class="modal-close" onclick="window.location='my-tickets-new.html'">✕</button>
+    </div>
+
+    <!-- Transport mode selector -->
+    <div class="transport-row">
+      <button class="transport-btn active" onclick="selectMode(this,'car')">🚗 Mobil <span id="duration-car">~17 mnt</span></button>
+      <button class="transport-btn" onclick="selectMode(this,'motor')">🏍️ Motor <span id="duration-motor">~12 mnt</span></button>
+      <button class="transport-btn" onclick="selectMode(this,'transit')">🚌 Transportasi Umum <span id="duration-transit">~32 mnt</span></button>
+      <button class="transport-btn" onclick="selectMode(this,'walk')">🚶 Jalan Kaki <span id="duration-walk">~58 mnt</span></button>
+    </div>
+
+    <!-- Map -->
+    <div class="map-area">
+      <img class="map-img" src="https://www.figma.com/api/mcp/asset/b6a34c90-fb22-4a76-b0d9-506b9b5692ef" alt="Route Map"/>
+      <div class="map-route-hint">
+        <div>Gunakan kiri lane untuk tetap di <b>Jl. Gatot Subroto</b></div>
+        <div class="route-duration" id="totalDuration">~17 mnt • 5 km</div>
+      </div>
+      <div class="map-overlay-controls">
+        <button class="map-ctrl" onclick="zoomIn()">＋</button>
+        <button class="map-ctrl" onclick="zoomOut()">－</button>
+        <button class="map-ctrl" onclick="refreshRoute()">🔄</button>
+      </div>
+    </div>
+
+    <!-- Route inputs -->
+    <div class="inputs-row">
+      <div class="route-input-wrap">
+        <span class="route-pin">◎</span>
+        <input type="text" class="route-input" id="startInput" placeholder="Pilih titik awal" />
+      </div>
+      <div class="route-input-wrap">
+        <span class="route-pin">📍</span>
+        <input type="text" class="route-input" value="Gelora Bung Karno Main Stadium, Jl. Pintu Satu Senayan, Gelora, Tanah Abang, Jakarta" readonly />
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <a href="https://maps.app.goo.gl/MXxc2YKaHGM1FJdD8" class="btn-gmaps" target="_blank">
+        <img class="gmaps-icon" src="https://www.figma.com/api/mcp/asset/486835f4-093a-4876-9a93-f7f7eb877b9f" alt="Google Maps"/>
+        Buka GoogleMaps
+      </a>
+      <button class="btn-back-link" onclick="window.location='my-tickets-new.html'">← Kembali</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let zoom = 1;
+function zoomIn() { zoom = Math.min(zoom+.15,2.2); document.querySelector('.map-img').style.transform=`scale(${zoom})`; }
+function zoomOut() { zoom = Math.max(zoom-.15,.8); document.querySelector('.map-img').style.transform=`scale(${zoom})`; }
+function refreshRoute() {
+  const btn = event.target;
+  btn.textContent = '⟳';
+  setTimeout(() => { btn.textContent = '🔄'; }, 1000);
+}
+const durations = { car:'~17 mnt • 5 km', motor:'~12 mnt • 5 km', transit:'~32 mnt • 5 km', walk:'~58 mnt • 4.8 km' };
+function selectMode(btn, mode) {
+  document.querySelectorAll('.transport-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('totalDuration').textContent = durations[mode];
+}
+</script>
+</body>
+</html>

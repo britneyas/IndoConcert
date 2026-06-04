@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Kepadatan Manusia — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <style>
+    body { background:linear-gradient(175deg,rgba(112,140,255,.06) 0%,#fff 50%); min-height:100vh; }
+    .page-wrap { max-width:1440px; margin:0 auto; padding:0 80px 80px; }
+
+    /* Same tickets header as my-tickets-new */
+    .tickets-header { display:flex; align-items:center; justify-content:space-between; padding:32px 0 20px; }
+    .tickets-title { font-size:42px; font-weight:700; color:#000; }
+    .tab-row { display:flex; gap:12px; margin-bottom:28px; }
+    .tab-btn { padding:12px 28px; border-radius:12px; font-size:20px; font-weight:700; cursor:pointer; border:none; font-family:'Inter',sans-serif; }
+    .tab-btn.active { background:#37457d; color:#fff; box-shadow:0 4px 10px rgba(0,0,0,.6); }
+    .tab-btn.blue { background:#516bff; color:#fff; }
+
+    /* Ticket card base */
+    .ticket-card { background:#fff; border-radius:20px; box-shadow:0 4px 20px rgba(0,0,0,.12); display:flex; align-items:stretch; overflow:hidden; margin-bottom:20px; position:relative; }
+    .ticket-poster { width:180px; min-width:180px; height:210px; overflow:hidden; border-radius:16px; margin:12px 0 12px 12px; }
+    .ticket-poster img { width:100%; height:100%; object-fit:cover; border-radius:16px; }
+    .ticket-info { flex:1; padding:20px 24px; }
+    .ticket-name { font-size:17px; font-weight:600; color:#111827; margin-bottom:10px; }
+    .ticket-meta { font-size:13px; color:#4b5563; display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+    .ticket-divider { width:1px; background:#e5e7eb; margin:0 20px; }
+    .ticket-qr-zone { display:flex; flex-direction:column; align-items:center; padding:16px 20px; min-width:130px; }
+    .qr-img { width:110px; height:110px; object-fit:contain; }
+    .ticket-right { background:linear-gradient(to right,#fff,#eef3ff 32%); min-width:340px; padding:20px 18px; display:flex; flex-direction:column; gap:10px; border-radius:0 20px 20px 0; }
+    .density-badge { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:500; }
+    .live-dot { background:rgba(76,175,80,.9); color:#fff; font-size:11px; font-weight:700; padding:2px 6px; border-radius:4px; }
+    .ticket-actions { display:flex; gap:10px; }
+    .btn-view { background:#516bff; color:#fff; border:none; border-radius:12px; padding:9px 20px; font-size:15px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; }
+    .btn-dl { background:#f1f3ff; color:#2d3e8b; border:none; border-radius:12px; padding:9px 20px; font-size:15px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; }
+    .btn-route { background:#0c194e; color:#fff; border:none; border-radius:8px; padding:6px 16px; font-size:12px; cursor:pointer; font-family:'Inter',sans-serif; text-decoration:none; display:inline-block; }
+
+    /* ===== MINI DENSITY POPUP ===== */
+    .overlay { position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:50; display:flex; align-items:flex-end; justify-content:flex-end; padding:40px; pointer-events:none; }
+    .density-popup {
+      background:#fff; border-radius:20px;
+      box-shadow:0 0 20px rgba(0,0,0,.15);
+      width:440px; padding:24px;
+      pointer-events:all; position:relative;
+      animation:slideIn .3s ease;
+    }
+    @keyframes slideIn { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+    .popup-close {
+      position:absolute; top:12px; right:14px;
+      width:24px; height:24px; cursor:pointer;
+      background:none; border:none; font-size:20px; color:#555;
+    }
+    .popup-title { font-size:20px; font-weight:700; color:#000; margin-bottom:16px; }
+    .popup-map { width:100%; height:200px; border-radius:12px; overflow:hidden; box-shadow:0 4px 8px rgba(0,0,0,.25); margin-bottom:14px; position:relative; }
+    .popup-map img { width:100%; height:100%; object-fit:cover; }
+    .popup-fullscreen {
+      position:absolute; bottom:8px; right:8px;
+      background:rgba(255,255,255,.9); border:none; border-radius:6px;
+      padding:4px 8px; cursor:pointer; font-size:12px; text-decoration:none; color:#333;
+    }
+    .popup-stats { font-size:15px; color:#000; line-height:1.7; }
+    .popup-stats b { font-weight:700; }
+    /* Tooltip arrow */
+    .popup-arrow { width:0; height:0; border-left:14px solid transparent; border-right:14px solid transparent; border-top:18px solid #fff; position:absolute; bottom:-18px; right:56px; filter:drop-shadow(0 3px 2px rgba(0,0,0,.15)); }
+
+    /* Nav breadcrumb */
+    .back-nav { font-size:14px; color:var(--primary); padding:8px 0 0; }
+    .back-nav a { text-decoration:none; color:var(--primary); font-weight:500; }
+    .back-nav a:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="navbar">
+    <a href="index.html" class="navbar-logo">
+      <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
+      <span class="navbar-logo-text">IndoConcert</span>
+    </a>
+    <div class="navbar-links">
+      <a href="index.html">Beranda</a>
+      <a href="explore.html">Jelajahi</a>
+      <a href="fan-match.html">Cari Teman</a>
+      <a href="about.html">Tentang Kami</a>
+      <a href="my-tickets-new.html" style="font-weight:700;color:var(--primary);">Tiket Saya</a>
+    </div>
+    <div class="navbar-actions">
+      <a href="profile.html" style="font-size:14px;color:var(--primary);font-weight:600;padding:8px 12px;">👤 Akun</a>
+      <a href="my-calendar.html" class="btn-masuk">📅 Kalender</a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="back-nav"><a href="my-tickets-new.html">← Kembali ke Tiket Saya</a></div>
+    <div class="tickets-header">
+      <div class="tickets-title">Tiket Saya</div>
+    </div>
+    <div class="tab-row">
+      <button class="tab-btn active">Tiket Aktif</button>
+      <button class="tab-btn blue">Riwayat</button>
+    </div>
+
+    <!-- Dimmed ticket card -->
+    <div class="ticket-card" style="filter:brightness(.85);">
+      <div class="ticket-poster">
+        <img src="https://www.figma.com/api/mcp/asset/766b5112-f90a-480a-9d88-20d1ccfe4366" alt="Nadin Amizah"/>
+      </div>
+      <div class="ticket-info">
+        <div class="ticket-name">Nadin Amizah</div>
+        <div class="ticket-meta">📅 15 Desember 2026</div>
+        <div class="ticket-meta">📍 Tennis Indoor Senayan</div>
+        <div class="ticket-meta">🎫 Pesanan #571928</div>
+      </div>
+      <div class="ticket-divider"></div>
+      <div style="padding:16px;">
+        <div style="color:#4b5563;font-size:11px;">BAGIAN: <b>A</b></div>
+        <div style="color:#4b5563;font-size:11px;">BARIS: <b>1</b></div>
+        <div style="color:#4b5563;font-size:11px;">KURSI: <b>13</b></div>
+      </div>
+      <div class="ticket-qr-zone">
+        <img class="qr-img" src="https://www.figma.com/api/mcp/asset/727656e0-88a9-42a5-adc9-6e57886ece96" alt="QR"/>
+        <div style="font-size:11px;color:#516bff;font-weight:700;margin-top:6px;">Acara mulai dalam</div>
+        <div style="font-size:13px;color:#333;">12 Hari 4 Jam</div>
+        <div style="font-size:11px;color:#516bff;font-weight:700;margin-top:4px;">Perkiraan Cuaca</div>
+        <div style="font-size:12px;color:#333;">🌤 28°C | Langit Cerah</div>
+      </div>
+      <div class="ticket-right">
+        <div class="density-badge">
+          <span class="live-dot">LIVE</span>
+          <span style="font-size:12px;color:#333;">Kepadatan Manusia</span>
+        </div>
+        <div style="font-size:13px;color:#333;">Sedang (46%)</div>
+        <div class="ticket-actions">
+          <button class="btn-view">Lihat Tiket</button>
+          <button class="btn-dl">Unduh</button>
+        </div>
+        <a href="route-map.html" class="btn-route" style="text-align:center;">Lihat Rute</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MINI DENSITY POPUP -->
+<div class="overlay" id="densityOverlay">
+  <div class="density-popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-title">Live Kepadatan Manusia</div>
+    <div class="popup-map">
+      <img src="https://www.figma.com/api/mcp/asset/2512c81f-4897-424d-aec4-f8d5cdf26f04" alt="Density Map"/>
+      <a href="density-map-full.html" class="popup-fullscreen">⛶ Perbesar</a>
+    </div>
+    <div class="popup-stats">
+      Rata-rata Kepadatan: <b>Sedang</b> (46%)<br>
+      Saran: <b>Datang sebelum 18:00</b>
+    </div>
+    <div class="popup-arrow"></div>
+  </div>
+</div>
+
+<script>
+function closePopup() {
+  document.getElementById('densityOverlay').style.display = 'none';
+  window.location.href = 'my-tickets-new.html';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rekomendasi Otomatis — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css"/>
+  <style>
+    body { background:linear-gradient(175deg,rgba(112,140,255,.06) 0%,#fff 50%); min-height:100vh; }
+    .backdrop { position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:40; }
+    .modal-outer { position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:30px; }
+
+    .rec-modal {
+      background:#fff; border-radius:20px;
+      box-shadow:0 0 20px rgba(0,0,0,.15);
+      width:min(1108px,96vw); max-height:90vh; overflow-y:auto;
+      position:relative; padding:32px;
+    }
+    .modal-close { position:absolute; top:18px; right:22px; background:none; border:none; font-size:22px; cursor:pointer; color:#555; }
+    .modal-title { font-size:22px; font-weight:700; color:#000; margin-bottom:6px; }
+    .modal-subtitle { font-size:16px; font-weight:600; color:#333; margin-bottom:20px; }
+
+    /* Concert-inspired fashion row */
+    .fashion-label { font-size:16px; font-weight:600; color:#333; margin-bottom:12px; }
+    .fashion-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
+    .fashion-card {
+      border-radius:12px; overflow:hidden; position:relative;
+      height:260px; cursor:pointer;
+      box-shadow:0 6px 25px rgba(0,0,0,.25);
+    }
+    .fashion-card img { width:100%; height:100%; object-fit:cover; transition:transform .3s; }
+    .fashion-card:hover img { transform:scale(1.05); }
+    .fashion-save {
+      position:absolute; bottom:10px; right:10px;
+      background:rgba(255,255,255,.9); border:none; border-radius:8px;
+      padding:5px 10px; font-size:14px; cursor:pointer;
+      font-weight:600; color:#37457d;
+    }
+
+    /* Moodboard row */
+    .moodboard-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:28px; }
+    .moodboard-card {
+      border-radius:12px; overflow:hidden; position:relative;
+      height:200px; cursor:pointer;
+      box-shadow:0 6px 25px rgba(0,0,0,.25);
+    }
+    .moodboard-card img { width:100%; height:100%; object-fit:cover; }
+    .moodboard-save {
+      position:absolute; bottom:10px; right:10px;
+      background:rgba(255,255,255,.9); border:none; border-radius:8px;
+      padding:5px 10px; font-size:14px; cursor:pointer; font-weight:600; color:#37457d;
+    }
+
+    .modal-actions { display:flex; gap:14px; justify-content:flex-end; align-items:center; }
+    .btn-ai { background:#37457d; color:#fff; border:none; border-radius:12px; padding:14px 32px; font-size:18px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; text-decoration:none; }
+    .btn-back { background:none; border:none; font-size:16px; color:var(--primary); cursor:pointer; font-family:'Inter',sans-serif; font-weight:600; text-decoration:underline; }
+  </style>
+</head>
+<body>
+<div class="backdrop" onclick="window.location='ai-recommend-mini.html'"></div>
+
+<div class="modal-outer">
+  <div class="rec-modal">
+    <button class="modal-close" onclick="window.location='ai-recommend-mini.html'">✕</button>
+    <div class="modal-title">Rekomendasi Otomatis</div>
+    <div class="modal-subtitle">Gaya Busana Terinspirasi dari Konser Nadin Amizah:</div>
+
+    <!-- Concert-inspired outfits -->
+    <div class="fashion-label">Inspirasi gaya dari artis:</div>
+    <div class="fashion-grid">
+      <div class="fashion-card">
+        <img src="https://www.figma.com/api/mcp/asset/40ff1a81-08e4-445b-8474-49d35337c4ad" alt="Fashion 1"/>
+        <button class="fashion-save" onclick="save(1)">🔖</button>
+      </div>
+      <div class="fashion-card">
+        <img src="https://www.figma.com/api/mcp/asset/c0865303-5779-4620-8122-604bf0378d06" alt="Fashion 2"/>
+        <button class="fashion-save" onclick="save(2)">🔖</button>
+      </div>
+      <div class="fashion-card">
+        <img src="https://www.figma.com/api/mcp/asset/24e1ec80-48af-4713-a57c-06f3d94c86a5" alt="Fashion 3"/>
+        <button class="fashion-save" onclick="save(3)">🔖</button>
+      </div>
+      <div class="fashion-card">
+        <img src="https://www.figma.com/api/mcp/asset/d81faf52-e552-43c1-b7d8-32070776d402" alt="Fashion 4"/>
+        <button class="fashion-save" onclick="save(4)">🔖</button>
+      </div>
+    </div>
+
+    <!-- Moodboard -->
+    <div class="fashion-label">Inspirasi Papan Moodboard:</div>
+    <div class="moodboard-grid">
+      <div class="moodboard-card">
+        <img src="https://www.figma.com/api/mcp/asset/08ffdda6-0a8b-45fc-80cd-44c6346d4475" alt="Moodboard 1"/>
+        <button class="moodboard-save" onclick="save(5)">🔖</button>
+      </div>
+      <div class="moodboard-card">
+        <img src="https://www.figma.com/api/mcp/asset/7a980a14-b92e-4629-b605-97bda0b32b00" alt="Moodboard 2"/>
+        <button class="moodboard-save" onclick="save(6)">🔖</button>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-back" onclick="window.location='ai-recommend-mini.html'">← Kembali</button>
+      <a href="ai-chatbot.html" class="btn-ai">Tanya AI Stylis</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function save(n) { alert('Item #' + n + ' disimpan ke wishlist pakaian!'); }
+</script>
+</body>
+</html>
