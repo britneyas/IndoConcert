@@ -6,275 +6,310 @@
   <title>IndoConcert — Platform Tiket Konser Terpercaya</title>
   <link rel="stylesheet" href="css/shared.css" />
   <style>
-    /* HERO */
-    .hero {
+    /* ============================================================
+       HERO + CAROUSEL
+    ============================================================ */
+    .hero-section {
       position: relative;
-      background: linear-gradient(132.57deg, rgba(112,140,255,0) 13%, #ffffff 88%);
-      padding: 48px 112px 64px;
+      overflow: hidden;
+      background: linear-gradient(132deg, rgba(112,140,255,0) 13%, #fff 88%);
+    }
+
+    /* Slide container */
+    .carousel-track {
+      display: flex;
+      transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
       display: flex;
       align-items: center;
+      padding: 56px 112px 64px;
       gap: 48px;
       min-height: 560px;
-      overflow: hidden;
+      box-sizing: border-box;
     }
-    .hero-text { flex: 1; max-width: 580px; }
-    .hero-text h1 {
+
+    /* Each slide gets its own subtle gradient tint */
+    .carousel-slide:nth-child(1) { background: linear-gradient(132deg, rgba(112,140,255,0.08) 0%, #fff 70%); }
+    .carousel-slide:nth-child(2) { background: linear-gradient(132deg, rgba(255,112,140,0.06) 0%, #fff 70%); }
+    .carousel-slide:nth-child(3) { background: linear-gradient(132deg, rgba(112,200,255,0.07) 0%, #fff 70%); }
+    .carousel-slide:nth-child(4) { background: linear-gradient(132deg, rgba(180,112,255,0.06) 0%, #fff 70%); }
+
+    .slide-text { flex: 1; max-width: 580px; }
+    .slide-tag {
+      display: inline-block;
+      background: rgba(73,91,167,0.12);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+    .slide-title {
       font-size: 46px;
       font-weight: 900;
       color: var(--primary);
-      line-height: 1.15;
-      margin-bottom: 12px;
+      line-height: 1.1;
+      margin-bottom: 10px;
     }
-    .hero-text h2 {
-      font-size: 36px;
+    .slide-subtitle {
+      font-size: 32px;
       font-weight: 800;
       color: #0e484d;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
-    .hero-text p {
-      font-size: 18px;
+    .slide-desc {
+      font-size: 17px;
       color: var(--primary);
-      line-height: 1.6;
-      margin-bottom: 28px;
+      line-height: 1.65;
+      margin-bottom: 24px;
+      opacity: 0.85;
     }
-    .hero-meta {
+    .slide-meta {
       display: flex;
-      gap: 32px;
+      gap: 24px;
       margin-bottom: 28px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 500;
       color: var(--primary);
     }
-    .hero-meta span { display: flex; align-items: center; gap: 6px; }
-    .hero-meta svg { width: 16px; height: 16px; }
+    .slide-meta span { display: flex; align-items: center; gap: 6px; }
+    .slide-meta svg { width: 15px; height: 15px; flex-shrink: 0; }
     .btn-hero {
       display: inline-block;
       background: var(--primary);
       color: #fff;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
-      padding: 18px 48px;
-      border-radius: 19px;
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    .btn-hero:hover { opacity: 0.88; }
-    .hero-image {
-      flex: 0 0 500px;
-      height: 520px;
-      border-radius: 56px 56px 0 0;
-      overflow: hidden;
-    }
-    .hero-image img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
-
-    /* SEARCH BAR below hero */
-    .search-section {
-      background: #3d3d49;
-      padding: 32px 112px;
-    }
-    .search-label { color: #c1c1ca; font-size: 16px; margin-bottom: 12px; }
-    .search-bar-wrap {
-      background: #65657a;
+      padding: 16px 40px;
       border-radius: 16px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-hero:hover { opacity: 0.88; transform: translateY(-2px); }
+
+    .slide-image {
+      flex: 0 0 460px;
+      height: 500px;
+      border-radius: 48px 48px 0 0;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(12,25,78,0.2);
+    }
+    .slide-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    /* CAROUSEL CONTROLS */
+    .carousel-controls {
       display: flex;
       align-items: center;
-      padding: 14px 20px;
-      max-width: 560px;
-      gap: 10px;
-      margin-bottom: 16px;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px 0 24px;
+      position: relative;
+      z-index: 5;
     }
-    .search-bar-wrap svg { color: #e0e0e4; flex-shrink: 0; }
+    .carousel-dot {
+      width: 10px; height: 10px;
+      border-radius: 9999px;
+      background: rgba(12,25,78,0.2);
+      border: none; cursor: pointer;
+      transition: background 0.25s, width 0.25s;
+      padding: 0;
+    }
+    .carousel-dot.active { background: var(--primary); width: 28px; }
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px; height: 44px;
+      background: rgba(255,255,255,0.85);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: background 0.2s, transform 0.2s;
+      z-index: 10;
+    }
+    .carousel-arrow:hover { background: #fff; transform: translateY(-50%) scale(1.08); }
+    .carousel-arrow.prev { left: 80px; }
+    .carousel-arrow.next { right: 80px; }
+    .carousel-arrow svg { width: 18px; height: 18px; color: var(--primary); }
+
+    /* ============================================================
+       SEARCH BAR (below hero)
+    ============================================================ */
+    .search-section {
+      background: #3d3d49;
+      padding: 28px 112px;
+    }
+    .search-label { color: #c1c1ca; font-size: 15px; margin-bottom: 12px; font-weight: 500; }
+    .search-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .search-bar-wrap {
+      background: #65657a;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      padding: 12px 18px;
+      max-width: 500px;
+      flex: 1;
+      gap: 10px;
+    }
     .search-bar-wrap input {
-      background: none;
-      border: none;
-      outline: none;
-      color: #e0e0e4;
-      font-size: 16px;
-      width: 100%;
+      background: none; border: none; outline: none;
+      color: #e0e0e4; font-size: 15px; width: 100%;
       font-family: 'Inter', sans-serif;
     }
-    .search-bar-wrap input::placeholder { color: #e0e0e4; }
-    .search-tags { display: flex; gap: 12px; flex-wrap: wrap; }
+    .search-bar-wrap input::placeholder { color: #a0a0b0; }
+    .search-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
     .search-tag {
-      background: #65657a;
-      color: #fff;
-      border-radius: 17px;
-      padding: 8px 16px;
-      font-size: 15px;
-      cursor: pointer;
+      background: #65657a; color: #fff;
+      border-radius: 15px; padding: 6px 14px;
+      font-size: 13px; cursor: pointer;
       transition: background 0.2s;
     }
     .search-tag:hover { background: #8080a0; }
 
-    /* KATEGORI MUSIK */
-    .section { padding: 60px 112px; }
+    /* ============================================================
+       SECTION COMMONS
+    ============================================================ */
+    .section { padding: 56px 112px; }
     .section-title {
       font-family: 'Poppins', sans-serif;
-      font-size: 42px;
-      font-weight: 700;
-      color: var(--primary);
-      text-align: center;
-      margin-bottom: 8px;
+      font-size: 38px; font-weight: 700;
+      color: var(--primary); text-align: center; margin-bottom: 8px;
     }
     .section-sub {
-      font-size: 22px;
-      color: var(--primary);
-      text-align: center;
-      margin-bottom: 40px;
+      font-size: 20px; color: var(--primary);
+      text-align: center; margin-bottom: 40px; opacity: 0.8;
     }
+    .section-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-end; margin-bottom: 28px;
+    }
+    .section-header-left h2 { font-size: 22px; font-weight: 600; color: var(--primary); }
+    .section-header-left p { font-size: 16px; color: var(--primary); margin-top: 4px; opacity: 0.75; }
+    .see-all { font-size: 15px; color: var(--primary); font-weight: 500; text-decoration: none; }
+    .see-all:hover { text-decoration: underline; }
+
+    /* ============================================================
+       KATEGORI MUSIK
+    ============================================================ */
     .category-grid {
-      display: flex;
-      gap: 24px;
-      justify-content: center;
-      flex-wrap: wrap;
+      display: flex; gap: 20px;
+      justify-content: center; flex-wrap: wrap;
     }
     .category-card {
-      background: var(--blue-mid);
-      border-radius: 16px;
-      padding: 28px 36px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      min-width: 140px;
-      cursor: pointer;
+      background: var(--blue-mid); border-radius: 14px;
+      padding: 24px 32px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 14px;
+      min-width: 130px; cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
     }
-    .category-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-    .category-card svg { width: 36px; height: 36px; fill: #fff; }
-    .category-card span { font-size: 22px; font-weight: 600; color: #fff; }
+    .category-card:hover { transform: translateY(-5px); box-shadow: 0 10px 28px rgba(0,0,0,0.18); }
+    .category-card svg { width: 32px; height: 32px; fill: none; stroke: #fff; stroke-width: 2; }
+    .category-card span { font-size: 20px; font-weight: 600; color: #fff; }
 
-    /* KONSER POPULER */
-    .section-blue { background: rgba(34,55,143,0.11); }
+    /* ============================================================
+       KONSER CARDS
+    ============================================================ */
     .concerts-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      margin-top: 8px;
+      gap: 20px;
     }
-    .concert-card { border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 10px 15px rgba(0,0,0,0.1); }
-    .concert-card-img { width: 100%; height: 200px; object-fit: cover; position: relative; }
-    .concert-card-img-wrap { position: relative; }
+    .c-card {
+      background: #fff; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.08), 0 10px 15px rgba(0,0,0,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .c-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.14); }
+    .c-card-imgwrap { position: relative; }
+    .c-card-imgwrap img { width: 100%; height: 190px; object-fit: cover; display: block; }
     .badge-hot {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #db3022;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 9999px;
+      position: absolute; top: 10px; right: 10px;
+      background: #db3022; color: #fff;
+      font-size: 12px; font-weight: 700;
+      padding: 3px 10px; border-radius: 9999px;
     }
-    .concert-card-body { padding: 16px 20px; }
-    .concert-card-title { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
-    .concert-card-date, .concert-card-venue {
-      font-size: 14px;
-      color: var(--gray-600);
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .concert-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 12px;
-    }
-    .concert-price { font-size: 16px; font-weight: 700; color: rgba(47,42,143,0.91); }
+    .c-card-body { padding: 14px 16px; }
+    .c-card-title { font-size: 17px; font-weight: 700; color: #333; margin-bottom: 5px; }
+    .c-card-meta { font-size: 13px; color: var(--gray-600); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+    .c-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--gray-100); }
+    .c-card-price { font-size: 15px; font-weight: 700; color: rgba(47,42,143,0.91); }
     .btn-pesan {
-      background: var(--navy-btn);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: opacity 0.2s;
+      background: var(--navy-btn); color: #fff; border: none;
+      border-radius: 8px; padding: 7px 14px; font-size: 12px;
+      cursor: pointer; transition: opacity 0.2s; text-decoration: none;
     }
     .btn-pesan:hover { opacity: 0.85; }
 
-    /* BLOG */
-    .blog-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 8px;
-    }
+    /* ============================================================
+       BLOG
+    ============================================================ */
+    .section-blue-tint { background: rgba(34,55,143,0.06); }
+    .blog-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
     .blog-card {
-      background: var(--primary);
-      border-radius: 16px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s;
+      background: var(--primary); border-radius: 16px; overflow: hidden;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
     }
-    .blog-card:hover { transform: translateY(-4px); }
-    .blog-card img { width: 100%; height: 180px; object-fit: cover; }
-    .blog-card-body { padding: 20px; }
-    .blog-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: #fff;
-      margin-bottom: 10px;
-    }
-    .blog-card-title { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.4; margin-bottom: 8px; }
-    .blog-card-excerpt { font-size: 11px; color: #fff; line-height: 1.5; opacity: 0.9; }
+    .blog-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+    .blog-card img { width: 100%; height: 170px; object-fit: cover; display: block; }
+    .blog-card-body { padding: 16px; }
+    .blog-meta { display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.8); margin-bottom: 8px; }
+    .blog-card-title { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.45; margin-bottom: 8px; }
+    .blog-card-excerpt { font-size: 11px; color: rgba(255,255,255,0.85); line-height: 1.55; }
 
-    /* KONSER MENDATANG */
-    .section-upcoming { background: #e7e9f3; }
-    .upcoming-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      margin-top: 8px;
-    }
+    /* ============================================================
+       KONSER MENDATANG
+    ============================================================ */
+    .section-light { background: #e7e9f3; }
+    .upcoming-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
     .upcoming-card {
-      border-radius: 15px;
-      overflow: hidden;
-      position: relative;
-      height: 360px;
-      cursor: pointer;
-      transition: transform 0.2s;
+      border-radius: 15px; overflow: hidden;
+      position: relative; height: 340px; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
     }
-    .upcoming-card:hover { transform: scale(1.02); }
-    .upcoming-card img { width: 100%; height: 100%; object-fit: cover; filter: blur(4px); transform: scale(1.05); }
+    .upcoming-card:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+    .upcoming-card-bg {
+      position: absolute; inset: 0;
+      overflow: hidden;
+    }
+    .upcoming-card-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: blur(3px) brightness(0.75);
+      transform: scale(1.06);
+    }
     .upcoming-card-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.55));
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 16px;
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));
+      display: flex; flex-direction: column;
+      justify-content: space-between; padding: 20px;
     }
     .upcoming-card-name {
-      font-size: 22px;
-      font-weight: 900;
-      color: #fff;
+      font-size: 22px; font-weight: 900; color: #fff;
       text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-      align-self: center;
-      margin-top: 12px;
+      align-self: center; margin-top: 20px;
     }
     .upcoming-card-info {
-      text-align: center;
-      font-size: 16px;
-      font-weight: 500;
-      color: #fff;
-      text-shadow: 0 0 120px #000;
+      text-align: center; font-size: 15px; font-weight: 500;
+      color: #fff; text-shadow: 0 0 80px #000; line-height: 1.5;
     }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 32px;
-    }
-    .section-header-text h2 { font-size: 24px; font-weight: 600; color: var(--primary); }
-    .section-header-text p { font-size: 18px; color: var(--primary); margin-top: 4px; }
-    .see-all { font-size: 16px; color: var(--primary); font-weight: 500; text-decoration: none; }
-    .see-all:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -282,10 +317,7 @@
     <!-- NAVBAR -->
     <nav class="navbar">
       <a href="index.html" class="navbar-logo">
-        <svg viewBox="0 0 30 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/>
-          <path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/>
-        </svg>
+        <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
         <span class="navbar-logo-text">IndoConcert</span>
       </a>
       <div class="navbar-links">
@@ -295,40 +327,121 @@
         <a href="about.html">Tentang Kami</a>
       </div>
       <div class="navbar-actions">
-        <a href="login.html" class="btn-masuk">Masuk</a>
-        <a href="register.html" class="btn-daftar">Daftar</a>
+        <a href="profile.html" style="display:flex;align-items:center;gap:5px;font-size:14px;color:var(--primary);font-weight:600;padding:8px 12px;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(12,25,78,0.07)'" onmouseout="this.style.background='transparent'">👤 Akun</a>
+        <a href="my-tickets.html" class="btn-masuk">🎫 Tiket Saya</a>
+        <a href="login.html" class="btn-daftar">Masuk</a>
       </div>
     </nav>
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-text">
-        <h1>Beyoncé Konser Live!</h1>
-        <h2>Malam yang Tak Terlupakan…</h2>
-        <p>Bersiaplah untuk malam yang luar biasa bersama Beyoncé dengan penampilan memukau dan momen yang tidak terlupakan.<br>Jangan lewatkan! Amankan tiket Anda sekarang.</p>
-        <div class="hero-meta">
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            15 Maret 2026
-          </span>
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Gelora Bung Karno
-          </span>
-        </div>
-        <a href="concert-detail.html" class="btn-hero">Pesan Tiket</a>
+    <!-- ============================================================
+         HERO CAROUSEL
+    ============================================================ -->
+    <section class="hero-section">
+      <!-- Prev arrow -->
+      <button class="carousel-arrow prev" onclick="moveCarousel(-1)" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <div style="overflow:hidden;">
+        <div class="carousel-track" id="carouselTrack">
+
+          <!-- Slide 1: Beyoncé -->
+          <div class="carousel-slide">
+            <div class="slide-text">
+              <span class="slide-tag">⭐ Featured Concert</span>
+              <h1 class="slide-title">Beyoncé Konser Live!</h1>
+              <h2 class="slide-subtitle">Malam yang Tak Terlupakan…</h2>
+              <p class="slide-desc">Bersiaplah untuk malam yang luar biasa bersama Beyoncé dengan penampilan memukau dan momen yang tidak terlupakan.<br>Jangan lewatkan! Amankan tiket Anda sekarang.</p>
+              <div class="slide-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>15 Maret 2026</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Gelora Bung Karno</span>
+              </div>
+              <a href="concert-detail.html" class="btn-hero">Pesan Tiket</a>
+            </div>
+            <div class="slide-image">
+              <img src="images/b4f7e31b-b2bc-43b4-92aa-2a4293f7fc61.png" alt="Beyoncé" />
+            </div>
+          </div>
+
+          <!-- Slide 2: Raisa -->
+          <div class="carousel-slide">
+            <div class="slide-text">
+              <span class="slide-tag">🔥 Hot Ticket</span>
+              <h1 class="slide-title">Raisa Live in Concert</h1>
+              <h2 class="slide-subtitle">Satu Malam yang Sempurna…</h2>
+              <p class="slide-desc">Nikmati suara emas Raisa dalam konser spektakuler yang akan membuat Anda terbawa dalam melodi cinta dan kenangan indah bersama.</p>
+              <div class="slide-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>20 Januari 2026</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>ICE BSD, Tangerang</span>
+              </div>
+              <a href="concert-detail.html" class="btn-hero">Pesan Tiket</a>
+            </div>
+            <div class="slide-image">
+              <img src="images/8ed6fd79-fa7d-45ff-98f2-45f53fae47d6.jpg" alt="Raisa" />
+            </div>
+          </div>
+
+          <!-- Slide 3: Taylor Swift -->
+          <div class="carousel-slide">
+            <div class="slide-text">
+              <span class="slide-tag">✨ Coming Soon</span>
+              <h1 class="slide-title">Taylor Swift Eras Tour</h1>
+              <h2 class="slide-subtitle">Semua Era di Satu Panggung…</h2>
+              <p class="slide-desc">Jangan lewatkan kesempatan langka menyaksikan Taylor Swift membawakan lagu-lagu ikonik dari seluruh eraanya di Jakarta!</p>
+              <div class="slide-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>14 Agustus 2026</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Jakarta</span>
+              </div>
+              <a href="concert-detail.html" class="btn-hero">Pesan Tiket</a>
+            </div>
+            <div class="slide-image">
+              <img src="images/4d0f0cd9-7286-4c5f-9107-9f57fbc371e0.jpg" alt="Taylor Swift" />
+            </div>
+          </div>
+
+          <!-- Slide 4: Tulus -->
+          <div class="carousel-slide">
+            <div class="slide-text">
+              <span class="slide-tag">🎵 Indie Special</span>
+              <h1 class="slide-title">TULUS: Tur Manusia</h1>
+              <h2 class="slide-subtitle">Menyentuh Hati, Membekas Lama…</h2>
+              <p class="slide-desc">Rasakan pengalaman konser yang intim dan bermakna bersama Tulus — penyanyi yang selalu hadir tepat di relung hati pendengarnya.</p>
+              <div class="slide-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>22 Desember 2026</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>ICE BSD Tangerang</span>
+              </div>
+              <a href="concert-detail.html" class="btn-hero">Pesan Tiket</a>
+            </div>
+            <div class="slide-image">
+              <img src="images/12bb28f4-6c04-493b-97a8-6420f6c0cf02.jpg" alt="Tulus" />
+            </div>
+          </div>
+
+        </div><!-- end carousel-track -->
       </div>
-      <div class="hero-image">
-        <img src="images/b4f7e31b-b2bc-43b4-92aa-2a4293f7fc61.png" alt="Beyoncé" />
+
+      <!-- Next arrow -->
+      <button class="carousel-arrow next" onclick="moveCarousel(1)" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <!-- Dots -->
+      <div class="carousel-controls">
+        <button class="carousel-dot active" onclick="goToSlide(0)"></button>
+        <button class="carousel-dot" onclick="goToSlide(1)"></button>
+        <button class="carousel-dot" onclick="goToSlide(2)"></button>
+        <button class="carousel-dot" onclick="goToSlide(3)"></button>
       </div>
     </section>
 
     <!-- SEARCH -->
     <div class="search-section">
       <p class="search-label">Temukan konser favorit Anda</p>
-      <div class="search-bar-wrap">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e0e0e4" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="Cari berdasarkan Artis, Event, atau Venue" />
+      <div class="search-row">
+        <div class="search-bar-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a0a0b0" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Cari berdasarkan Artis, Event, atau Venue" />
+        </div>
       </div>
       <div class="search-tags">
         <span class="search-tag">#Terbaru</span>
@@ -343,98 +456,94 @@
       <p class="section-title">Musik Kategori</p>
       <p class="section-sub">Temukan konser yang sesuai dengan genre musik favorit Anda</p>
       <div class="category-grid">
-        <div class="category-card">
+        <a href="explore.html" class="category-card">
           <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-2c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/></svg>
           <span>Pop</span>
-        </div>
-        <div class="category-card">
+        </a>
+        <a href="explore.html" class="category-card">
           <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
           <span>Indie</span>
-        </div>
-        <div class="category-card">
+        </a>
+        <a href="explore.html" class="category-card">
           <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
           <span>Jazz</span>
-        </div>
-        <div class="category-card">
+        </a>
+        <a href="explore.html" class="category-card">
           <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           <span>K-Pop</span>
-        </div>
-        <div class="category-card">
+        </a>
+        <a href="explore.html" class="category-card">
           <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
           <span>Rock</span>
-        </div>
-        <div class="category-card">
+        </a>
+        <a href="explore.html" class="category-card">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
           <span>EDM</span>
-        </div>
+        </a>
       </div>
     </section>
 
     <!-- KONSER POPULER -->
-    <section class="section section-blue">
+    <section class="section section-blue-tint">
       <p class="section-title">Konser Populer</p>
       <p class="section-sub">Jangan lewatkan konser terbaik bulan ini</p>
       <div class="concerts-grid">
-        <!-- Card 1 -->
-        <div class="concert-card">
-          <div class="concert-card-img-wrap">
-            <img class="concert-card-img" src="images/8ed6fd79-fa7d-45ff-98f2-45f53fae47d6.jpg" alt="Raisa" />
+        <div class="c-card">
+          <div class="c-card-imgwrap">
+            <img src="images/8ed6fd79-fa7d-45ff-98f2-45f53fae47d6.jpg" alt="Raisa" />
             <span class="badge-hot">Hot</span>
           </div>
-          <div class="concert-card-body">
-            <div class="concert-card-title">Raisa</div>
-            <div class="concert-card-date">📅 20 Januari 2026</div>
-            <div class="concert-card-venue">📍 ICE BSD</div>
-            <div class="concert-card-footer">
-              <span class="concert-price">Rp 350.000</span>
+          <div class="c-card-body">
+            <div class="c-card-title">Raisa</div>
+            <div class="c-card-meta">📅 20 Januari 2026</div>
+            <div class="c-card-meta">📍 ICE BSD</div>
+            <div class="c-card-footer">
+              <span class="c-card-price">Rp 350.000</span>
               <a href="concert-detail.html" class="btn-pesan">Pesan Tiket</a>
             </div>
           </div>
         </div>
-        <!-- Card 2 -->
-        <div class="concert-card">
-          <div class="concert-card-img-wrap">
-            <img class="concert-card-img" src="images/3b000e7d-a6bf-4473-8158-0ed581fdc141.jpg" alt="Juicy Luicy" />
+        <div class="c-card">
+          <div class="c-card-imgwrap">
+            <img src="images/3b000e7d-a6bf-4473-8158-0ed581fdc141.jpg" alt="Juicy Luicy" />
             <span class="badge-hot">Hot</span>
           </div>
-          <div class="concert-card-body">
-            <div class="concert-card-title">Juicy Luicy Tur</div>
-            <div class="concert-card-date">📅 25 Januari 2026</div>
-            <div class="concert-card-venue">📍 Cornerstone Auditorium</div>
-            <div class="concert-card-footer">
-              <span class="concert-price">Rp 200.000</span>
+          <div class="c-card-body">
+            <div class="c-card-title">Juicy Luicy Tur</div>
+            <div class="c-card-meta">📅 25 Januari 2026</div>
+            <div class="c-card-meta">📍 Cornerstone Auditorium</div>
+            <div class="c-card-footer">
+              <span class="c-card-price">Rp 200.000</span>
               <a href="concert-detail.html" class="btn-pesan">Pesan Tiket</a>
             </div>
           </div>
         </div>
-        <!-- Card 3 -->
-        <div class="concert-card">
-          <div class="concert-card-img-wrap">
-            <img class="concert-card-img" src="images/6775c468-0db5-41f8-9640-c5e6501d56c3.jpg" alt="Lyodra" />
+        <div class="c-card">
+          <div class="c-card-imgwrap">
+            <img src="images/6775c468-0db5-41f8-9640-c5e6501d56c3.jpg" alt="Lyodra" />
             <span class="badge-hot">Hot</span>
           </div>
-          <div class="concert-card-body">
-            <div class="concert-card-title">Lyodra Ginting Solo Tur</div>
-            <div class="concert-card-date">📅 13 Februari 2026</div>
-            <div class="concert-card-venue">📍 JIExpo Kemayoran</div>
-            <div class="concert-card-footer">
-              <span class="concert-price">Rp 500.000</span>
+          <div class="c-card-body">
+            <div class="c-card-title">Lyodra Ginting Solo Tur</div>
+            <div class="c-card-meta">📅 13 Februari 2026</div>
+            <div class="c-card-meta">📍 JIExpo Kemayoran</div>
+            <div class="c-card-footer">
+              <span class="c-card-price">Rp 500.000</span>
               <a href="concert-detail.html" class="btn-pesan">Pesan Tiket</a>
             </div>
           </div>
         </div>
-        <!-- Card 4 -->
-        <div class="concert-card">
-          <div class="concert-card-img-wrap">
-            <img class="concert-card-img" src="images/ada3776e-ea6f-4a0d-bfb7-f76eab7a7165.jpg" alt="Mahalini" />
+        <div class="c-card">
+          <div class="c-card-imgwrap">
+            <img src="images/ada3776e-ea6f-4a0d-bfb7-f76eab7a7165.jpg" alt="Mahalini" />
             <span class="badge-hot">Hot</span>
           </div>
-          <div class="concert-card-body">
-            <div class="concert-card-title">Mahalini</div>
-            <div class="concert-card-date">📅 24 Februari 2026</div>
-            <div class="concert-card-venue">📍 Istora Senayan</div>
-            <div class="concert-card-footer">
-              <span class="concert-price">Rp 450.000</span>
+          <div class="c-card-body">
+            <div class="c-card-title">Mahalini</div>
+            <div class="c-card-meta">📅 24 Februari 2026</div>
+            <div class="c-card-meta">📍 Istora Senayan</div>
+            <div class="c-card-footer">
+              <span class="c-card-price">Rp 450.000</span>
               <a href="concert-detail.html" class="btn-pesan">Pesan Tiket</a>
             </div>
           </div>
@@ -445,77 +554,77 @@
     <!-- BLOG -->
     <section class="section">
       <div class="section-header">
-        <div class="section-header-text">
+        <div class="section-header-left">
           <h2>Terbaru seputar musik, tur &amp; artis</h2>
           <p>Mengulas musik terpanas, kabar tur terbaru, dan sorotan artis pilihan</p>
         </div>
         <a href="#" class="see-all">Lihat semua</a>
       </div>
       <div class="blog-grid">
-        <div class="blog-card">
+        <a href="#" class="blog-card">
           <img src="images/dea367a7-39f8-4eb9-847f-c99877a1ff79.jpg" alt="Blog 1" />
           <div class="blog-card-body">
             <div class="blog-meta"><span>105 Komentar</span><span>👁 100K</span></div>
             <div class="blog-card-title">Ariana Grande: Sensasi Pop yang Mengubah Industri Musik</div>
-            <div class="blog-card-excerpt">Ariana Grande telah menjadi nama besar di industri musik, mendominasi dengan vokal kuat, lirik yang mudah diterima...</div>
+            <div class="blog-card-excerpt">Ariana Grande telah menjadi nama besar di industri musik, mendominasi dengan vokal kuat...</div>
           </div>
-        </div>
-        <div class="blog-card">
+        </a>
+        <a href="#" class="blog-card">
           <img src="images/ef2bc8d9-25d6-4eb4-bd7b-f0d484a0a3c7.png" alt="Blog 2" />
           <div class="blog-card-body">
             <div class="blog-meta"><span>35 Komentar</span><span>👁 10K</span></div>
             <div class="blog-card-title">Taylor Performs First Concert in Eight Years at Pre-Wedding Party in India</div>
-            <div class="blog-card-excerpt">Taylor tampil di sebuah acara pre-wedding mewah di India untuk menggelar konser pertamanya dalam hampir delapan tahun...</div>
+            <div class="blog-card-excerpt">Taylor tampil di sebuah acara pre-wedding mewah di India untuk menggelar konser pertamanya...</div>
           </div>
-        </div>
-        <div class="blog-card">
+        </a>
+        <a href="#" class="blog-card">
           <img src="images/3ed5512f-7a28-421b-a8e2-8e86b5f63190.png" alt="Blog 3" />
           <div class="blog-card-body">
             <div class="blog-meta"><span>85 Komentar</span><span>👁 15K</span></div>
-            <div class="blog-card-title">Azealia Banks Umumkan Tur 'Back To The Union Jack' di Inggris untuk September</div>
-            <div class="blog-card-excerpt">Rapper asal New York ini akan memulai tur Back To The Union Jack Tour di O2 Academy Brixton London...</div>
+            <div class="blog-card-title">Azealia Banks Umumkan Tur 'Back To The Union Jack' di Inggris</div>
+            <div class="blog-card-excerpt">Rapper asal New York ini akan memulai tur di O2 Academy Brixton London...</div>
           </div>
-        </div>
+        </a>
       </div>
     </section>
 
     <!-- KONSER MENDATANG -->
-    <section class="section section-upcoming">
+    <section class="section section-light">
       <div class="section-header">
-        <div class="section-header-text">
+        <div class="section-header-left">
           <h2>Konser Mendatang</h2>
         </div>
         <a href="explore.html" class="see-all">Lihat semua</a>
       </div>
       <div class="upcoming-grid">
-        <div class="upcoming-card">
-          <img src="images/4d0f0cd9-7286-4c5f-9107-9f57fbc371e0.jpg" alt="Taylor Swift" />
+        <a href="concert-detail.html" class="upcoming-card">
+          <div class="upcoming-card-bg"><img src="images/4d0f0cd9-7286-4c5f-9107-9f57fbc371e0.jpg" alt="Taylor Swift" /></div>
           <div class="upcoming-card-overlay">
             <div class="upcoming-card-name">Taylor Swift</div>
             <div class="upcoming-card-info">Jakarta<br>14 Agustus 2026</div>
           </div>
-        </div>
-        <div class="upcoming-card">
-          <img src="images/eddcc62c-a84a-4d29-8afe-cb2055e46f9a.jpg" alt="The Weeknd" />
+        </a>
+        <a href="concert-detail.html" class="upcoming-card">
+          <div class="upcoming-card-bg"><img src="images/eddcc62c-a84a-4d29-8afe-cb2055e46f9a.jpg" alt="The Weeknd" /></div>
           <div class="upcoming-card-overlay">
             <div class="upcoming-card-name">The Weeknd</div>
             <div class="upcoming-card-info">Bali<br>2 Oktober 2026</div>
           </div>
-        </div>
-        <div class="upcoming-card">
-          <img src="images/9396dc76-6fbb-4265-9d71-157520f5f070.jpg" alt="Niki Zefanya" />
+        </a>
+        <a href="concert-detail.html" class="upcoming-card">
+          <div class="upcoming-card-bg"><img src="images/9396dc76-6fbb-4265-9d71-157520f5f070.jpg" alt="Niki Zefanya" /></div>
           <div class="upcoming-card-overlay">
             <div class="upcoming-card-name">Niki Zefanya</div>
             <div class="upcoming-card-info">Jakarta<br>24 September 2026</div>
           </div>
-        </div>
-        <div class="upcoming-card">
-          <img src="images/4d3fd68a-38c5-47fc-a607-0d4d49edd37f.jpg" alt="Britney Spears" />
+        </a>
+        <a href="concert-detail.html" class="upcoming-card">
+          <div class="upcoming-card-bg"><img src="images/4d3fd68a-38c5-47fc-a607-0d4d49edd37f.jpg" alt="Britney Spears" /></div>
           <div class="upcoming-card-overlay">
             <div class="upcoming-card-name">Britney Spears</div>
             <div class="upcoming-card-info">Jakarta<br>7 Desember 2026</div>
           </div>
-        </div>
+        </a>
       </div>
     </section>
 
@@ -523,48 +632,61 @@
     <footer class="footer">
       <div class="footer-inner">
         <div class="footer-brand">
-          <div class="logo">
-            <svg width="18" height="28" viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#fff"/></svg>
-            IndoConcert
-          </div>
+          <div class="logo"><svg width="18" height="28" viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#fff"/></svg>IndoConcert</div>
           <p>Platform terpercaya untuk booking tiket konser musik terbaik di Indonesia. Dapatkan pengalaman musik yang tak terlupakan.</p>
           <div class="footer-socials">
-            <a href="#" title="Facebook">
-              <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-            </a>
-            <a href="#" title="Twitter/X">
-              <svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-            </a>
-            <a href="#" title="Instagram">
-              <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-            </a>
-            <a href="#" title="YouTube">
-              <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.4 19.54C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#333"/></svg>
-            </a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></a>
+            <a href="#"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.4 19.54C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#333"/></svg></a>
           </div>
         </div>
         <div class="footer-col">
           <h4>Informasi</h4>
-          <ul>
-            <li><a href="#">Kontak</a></li>
-            <li><a href="about.html">Tentang Kami</a></li>
-            <li><a href="#">Karir</a></li>
-            <li><a href="#">Blog</a></li>
-          </ul>
+          <ul><li><a href="#">Kontak</a></li><li><a href="about.html">Tentang Kami</a></li><li><a href="#">Karir</a></li><li><a href="#">Blog</a></li></ul>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>
-          <ul>
-            <li><a href="#">Syarat &amp; Ketentuan</a></li>
-            <li><a href="#">Kebijakan Privasi</a></li>
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Bantuan</a></li>
-          </ul>
+          <ul><li><a href="#">Syarat &amp; Ketentuan</a></li><li><a href="#">Kebijakan Privasi</a></li><li><a href="#">FAQ</a></li><li><a href="#">Bantuan</a></li></ul>
         </div>
       </div>
       <div class="footer-bottom">© 2025 IndoConcert. Hak cipta dilindungi.</div>
     </footer>
   </div>
+
+  <script>
+    let current = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots   = document.querySelectorAll('.carousel-dot');
+    const track  = document.getElementById('carouselTrack');
+    let autoTimer;
+
+    function goToSlide(n) {
+      current = (n + slides.length) % slides.length;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    function moveCarousel(dir) {
+      goToSlide(current + dir);
+      resetAuto();
+    }
+
+    function resetAuto() {
+      clearInterval(autoTimer);
+      autoTimer = setInterval(() => goToSlide(current + 1), 5000);
+    }
+
+    // Touch / swipe support
+    let touchStartX = 0;
+    track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+    track.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 50) { moveCarousel(dx < 0 ? 1 : -1); }
+    });
+
+    resetAuto();
+  </script>
 </body>
 </html>
 

@@ -8,22 +8,22 @@
   <style>
     body { background: linear-gradient(3deg, #dce3ff 17%, #ffffff 110%); min-height: 100vh; }
 
-    .explore-header { padding: 48px 112px 32px; }
-    .explore-header h1 { font-size: 42px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
-    .explore-header p { font-size: 20px; color: #30436d; margin-bottom: 24px; }
+    .explore-header { padding: 40px 88px 28px; }
+    .explore-header h1 { font-size: 36px; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+    .explore-header p { font-size: 16px; color: #30436d; margin-bottom: 16px; }
     .searchbar {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       background: #fff;
       border: 1.5px solid var(--gray-200);
-      border-radius: 12px;
-      padding: 14px 20px;
-      max-width: 480px;
-      box-shadow: 0 0 4.6px rgba(0,0,0,0.25);
+      border-radius: 10px;
+      padding: 10px 16px;
+      max-width: 380px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.15);
     }
     .searchbar input {
-      border: none; outline: none; font-size: 18px; color: #adaebc;
+      border: none; outline: none; font-size: 14px; color: #333;
       font-family: 'Inter', sans-serif; width: 100%; background: none;
     }
     .searchbar input::placeholder { color: #adaebc; }
@@ -175,8 +175,9 @@
         <a href="about.html">Tentang Kami</a>
       </div>
       <div class="navbar-actions">
-        <a href="login.html" class="btn-masuk">Masuk</a>
-        <a href="register.html" class="btn-daftar">Daftar</a>
+        <a href="profile.html" style="display:flex;align-items:center;gap:5px;font-size:14px;color:var(--primary);font-weight:600;padding:8px 12px;border-radius:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(12,25,78,0.07)'" onmouseout="this.style.background='transparent'">👤 Akun</a>
+        <a href="my-tickets.html" class="btn-masuk">🎫 Tiket Saya</a>
+        <a href="login.html" class="btn-daftar">Masuk</a>
       </div>
     </nav>
 
@@ -365,4 +366,5 @@
   </div>
 </body>
 </html>
+
 

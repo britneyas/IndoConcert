@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tiket Saya — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    body { background: linear-gradient(175deg, rgba(112,140,255,0.06) 0%, #fff 50%); min-height: 100vh; }
+
+    .page-content { max-width: 1100px; margin: 0 auto; padding: 40px 32px 80px; }
+
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 32px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .page-header p { font-size: 15px; color: var(--gray-600); }
+
+    /* FILTER TABS */
+    .filter-tabs {
+      display: flex; gap: 4px;
+      background: var(--gray-100); border-radius: 12px; padding: 4px;
+      width: fit-content; margin-bottom: 28px;
+    }
+    .tab-btn {
+      padding: 8px 20px; border-radius: 10px;
+      border: none; background: none; font-size: 14px;
+      font-weight: 500; color: var(--gray-500);
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { background: #fff; color: var(--primary); font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+
+    /* TICKET CARD */
+    .tickets-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .ticket-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      display: flex;
+    }
+    .ticket-card-accent {
+      width: 8px; flex-shrink: 0;
+    }
+    .ticket-card-accent.active   { background: var(--primary); }
+    .ticket-card-accent.upcoming { background: var(--teal); }
+    .ticket-card-accent.past     { background: var(--gray-300); }
+
+    .ticket-card-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 90px 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 20px 24px;
+    }
+    .ticket-card-img {
+      width: 90px; height: 90px;
+      border-radius: 12px; object-fit: cover;
+    }
+    .ticket-info h3 { font-size: 18px; font-weight: 700; color: #111; margin-bottom: 6px; }
+    .ticket-info p { font-size: 13px; color: var(--gray-600); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+
+    .ticket-status-wrap { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    .status-badge {
+      display: inline-block; padding: 4px 14px;
+      border-radius: 20px; font-size: 12px; font-weight: 700;
+    }
+    .status-badge.active   { background: rgba(12,25,78,0.1);    color: var(--primary); }
+    .status-badge.upcoming { background: rgba(45,100,105,0.1);   color: var(--teal); }
+    .status-badge.past     { background: var(--gray-100);        color: var(--gray-500); }
+
+    .ticket-actions { display: flex; gap: 8px; }
+    .btn-ticket {
+      padding: 8px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: opacity 0.2s;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .btn-ticket.primary { background: var(--primary); color: #fff; border: none; }
+    .btn-ticket.outline { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+    .btn-ticket:hover { opacity: 0.85; }
+
+    /* DIVIDER (ticket notch) */
+    .ticket-divider {
+      position: relative;
+      height: 1px; background: var(--gray-100);
+      margin: 0 24px;
+    }
+    .ticket-divider::before, .ticket-divider::after {
+      content: '';
+      position: absolute; top: -8px;
+      width: 16px; height: 16px;
+      background: var(--gray-50); border-radius: 50%;
+    }
+    .ticket-divider::before { left: -8px; }
+    .ticket-divider::after  { right: -8px; }
+
+    /* QR SECTION */
+    .ticket-qr {
+      display: flex; align-items: center;
+      gap: 20px; padding: 16px 24px;
+      background: var(--gray-50);
+    }
+    .qr-code {
+      width: 72px; height: 72px;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; color: var(--primary);
+      flex-shrink: 0;
+    }
+    .qr-info { flex: 1; }
+    .qr-info p { font-size: 13px; color: var(--gray-600); margin-bottom: 4px; }
+    .ticket-code { font-size: 20px; font-weight: 700; color: var(--primary); letter-spacing: 2px; }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center; padding: 80px 20px;
+      color: var(--gray-400);
+    }
+    .empty-state div { font-size: 64px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 20px; font-weight: 700; color: var(--gray-500); margin-bottom: 8px; }
+    .empty-state p { font-size: 15px; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <nav class="navbar">
+      <a href="index.html" class="navbar-logo">
+        <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
+        <span class="navbar-logo-text">IndoConcert</span>
+      </a>
+      <div class="navbar-links">
+        <a href="index.html">Beranda</a>
+        <a href="explore.html">Jelajahi</a>
+        <a href="fan-match.html">Cari Teman</a>
+        <a href="about.html">Tentang Kami</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="profile.html" style="font-size:14px;color:var(--primary);font-weight:500;">👤 Profil</a>
+      </div>
+    </nav>
+
+    <div class="page-content">
+      <div class="page-header">
+        <h1>🎫 Tiket Saya</h1>
+        <p>Semua tiket konser yang telah kamu beli</p>
+      </div>
+
+      <!-- TABS -->
+      <div class="filter-tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'active')">Aktif (1)</button>
+        <button class="tab-btn" onclick="switchTab(this,'upcoming')">Mendatang (2)</button>
+        <button class="tab-btn" onclick="switchTab(this,'past')">Riwayat (3)</button>
+      </div>
+
+      <!-- ACTIVE TICKETS -->
+      <div class="tickets-list" id="tab-active">
+        <!-- Ticket 1 -->
+        <div class="ticket-card">
+          <div class="ticket-card-accent active"></div>
+          <div style="flex:1;">
+            <div class="ticket-card-body">
+              <img class="ticket-card-img" src="images/e63a7118-baf7-43a9-85c9-5a45b703d885.png" alt="Tulus" />
+              <div class="ticket-info">
+                <h3>TULUS: Tur Manusia 2023</h3>
+                <p>📅 1 Februari 2023, 15:00 WIB</p>
+                <p>📍 Bali Nusa Dua Convention Center</p>
+                <p>🎟️ VIP A × 3 tiket</p>
+              </div>
+              <div class="ticket-status-wrap">
+                <span class="status-badge active">✓ Aktif</span>
+                <div class="ticket-actions">
+                  <a href="#" class="btn-ticket outline" onclick="showQR()">Lihat QR</a>
+                  <a href="virtual-seat.html" class="btn-ticket primary">Cek Kursi</a>
+                </div>
+              </div>
+            </div>
+            <div class="ticket-divider"></div>
+            <div class="ticket-qr">
+              <div class="qr-code">▦</div>
+              <div class="qr-info">
+                <p>Kode Tiket</p>
+                <div class="ticket-code">IC-TLR-2023-A001</div>
+                <p style="margin-top:4px;font-size:11px;">Tunjukkan QR Code ini di pintu masuk</p>
+              </div>
+              <a href="#" class="btn-ticket outline" onclick="downloadTicket()">⬇ Download</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPCOMING TICKETS -->
+      <div class="tickets-list" id="tab-upcoming" style="display:none;">
+        <div class="ticket-card">
+          <div class="ticket-card-accent upcoming"></div>
+          <div class="ticket-card-body">
+            <img class="ticket-card-img" src="images/4d0f0cd9-7286-4c5f-9107-9f57fbc371e0.jpg" alt="Taylor Swift" />
+            <div class="ticket-info">
+              <h3>Taylor Swift — Eras Tour</h3>
+              <p>📅 14 Agustus 2026, 19:00 WIB</p>
+              <p>📍 Jakarta</p>
+              <p>🎟️ Regular A × 2 tiket</p>
+            </div>
+            <div class="ticket-status-wrap">
+              <span class="status-badge upcoming">📆 Mendatang</span>
+              <div class="ticket-actions">
+                <a href="concert-detail.html" class="btn-ticket outline">Detail</a>
+                <a href="fan-match.html" class="btn-ticket primary">Cari Teman</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ticket-card">
+          <div class="ticket-card-accent upcoming"></div>
+          <div class="ticket-card-body">
+            <img class="ticket-card-img" src="images/eddcc62c-a84a-4d29-8afe-cb2055e46f9a.jpg" alt="The Weeknd" />
+            <div class="ticket-info">
+              <h3>The Weeknd — After Hours</h3>
+              <p>📅 2 Oktober 2026, 20:00 WIB</p>
+              <p>📍 Bali</p>
+              <p>🎟️ VIP × 1 tiket</p>
+            </div>
+            <div class="ticket-status-wrap">
+              <span class="status-badge upcoming">📆 Mendatang</span>
+              <div class="ticket-actions">
+                <a href="concert-detail.html" class="btn-ticket outline">Detail</a>
+                <a href="fan-match.html" class="btn-ticket primary">Cari Teman</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAST TICKETS -->
+      <div class="tickets-list" id="tab-past" style="display:none;">
+        <div class="ticket-card" style="opacity:0.7;">
+          <div class="ticket-card-accent past"></div>
+          <div class="ticket-card-body">
+            <img class="ticket-card-img" src="images/8ed6fd79-fa7d-45ff-98f2-45f53fae47d6.jpg" alt="Raisa" />
+            <div class="ticket-info">
+              <h3>Raisa — Lebih Indah</h3>
+              <p>📅 20 Januari 2024</p>
+              <p>📍 ICE BSD, Tangerang</p>
+              <p>🎟️ VIP A × 2 tiket</p>
+            </div>
+            <div class="ticket-status-wrap">
+              <span class="status-badge past">✓ Selesai</span>
+              <div class="ticket-actions">
+                <a href="#" class="btn-ticket outline">⭐ Beri Ulasan</a>
+                <a href="concert-detail.html" class="btn-ticket primary">Beli Lagi</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ticket-card" style="opacity:0.7;">
+          <div class="ticket-card-accent past"></div>
+          <div class="ticket-card-body">
+            <img class="ticket-card-img" src="images/12bb28f4-6c04-493b-97a8-6420f6c0cf02.jpg" alt="Tulus" />
+            <div class="ticket-info">
+              <h3>Tulus — Gajah World Tour</h3>
+              <p>📅 5 Maret 2023</p>
+              <p>📍 Tennis Indoor Senayan</p>
+              <p>🎟️ Regular × 1 tiket</p>
+            </div>
+            <div class="ticket-status-wrap">
+              <span class="status-badge past">✓ Selesai</span>
+              <div class="ticket-actions">
+                <a href="#" class="btn-ticket outline">⭐ Beri Ulasan</a>
+                <a href="concert-detail.html" class="btn-ticket primary">Beli Lagi</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ticket-card" style="opacity:0.7;">
+          <div class="ticket-card-accent past"></div>
+          <div class="ticket-card-body">
+            <img class="ticket-card-img" src="images/6775c468-0db5-41f8-9640-c5e6501d56c3.jpg" alt="Lyodra" />
+            <div class="ticket-info">
+              <h3>Lyodra — Bintang di Surga</h3>
+              <p>📅 13 November 2023</p>
+              <p>📍 JIExpo Kemayoran</p>
+              <p>🎟️ VVIP × 2 tiket</p>
+            </div>
+            <div class="ticket-status-wrap">
+              <span class="status-badge past">✓ Selesai</span>
+              <div class="ticket-actions">
+                <a href="#" class="btn-ticket outline">⭐ Beri Ulasan</a>
+                <a href="concert-detail.html" class="btn-ticket primary">Beli Lagi</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(btn, tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      ['active','upcoming','past'].forEach(t => {
+        const el = document.getElementById('tab-' + t);
+        if (el) el.style.display = t === tab ? 'flex' : 'none';
+      });
+      document.getElementById('tab-' + tab).style.flexDirection = 'column';
+    }
+    function showQR() { alert('QR Code: IC-TLR-2023-A001\n\nTunjukkan ini di pintu masuk!'); }
+    function downloadTicket() { alert('E-Tiket sedang diunduh ke perangkat Anda...'); }
+  </script>
+</body>
+</html>

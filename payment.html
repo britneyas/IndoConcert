@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pembayaran — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    body { background: linear-gradient(175deg, rgba(112,140,255,0) 7%, #fff 46%); min-height: 100vh; }
+
+    .payment-wrapper {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 32px 80px;
+    }
+
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; color: var(--gray-500);
+      margin-bottom: 28px;
+    }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { color: var(--gray-400); }
+
+    /* STEPS */
+    .steps {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-bottom: 40px;
+    }
+    .step {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      flex: 1; position: relative;
+    }
+    .step::after {
+      content: '';
+      position: absolute;
+      top: 16px; left: 50%; width: 100%;
+      height: 2px; background: var(--gray-200);
+      z-index: 0;
+    }
+    .step:last-child::after { display: none; }
+    .step-circle {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      background: var(--gray-200); color: var(--gray-500);
+      position: relative; z-index: 1;
+      transition: background 0.3s, color 0.3s;
+    }
+    .step.active .step-circle { background: var(--primary); color: #fff; }
+    .step.done .step-circle { background: #22c55e; color: #fff; }
+    .step-label { font-size: 12px; color: var(--gray-500); font-weight: 500; }
+    .step.active .step-label { color: var(--primary); font-weight: 700; }
+
+    /* MAIN GRID */
+    .payment-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* LEFT PANEL */
+    .panel {
+      background: #fff;
+      border: 1px solid var(--gray-100);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+    }
+    .panel-title {
+      font-size: 18px; font-weight: 700; color: var(--primary);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .panel-title svg { width: 20px; height: 20px; }
+
+    /* CONCERT SUMMARY */
+    .concert-summary {
+      display: flex; gap: 16px; align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--gray-100);
+      margin-bottom: 20px;
+    }
+    .concert-summary img {
+      width: 80px; height: 80px;
+      border-radius: 10px; object-fit: cover; flex-shrink: 0;
+    }
+    .concert-summary-info h3 { font-size: 16px; font-weight: 700; color: #000; margin-bottom: 4px; }
+    .concert-summary-info p { font-size: 13px; color: var(--gray-600); margin-bottom: 2px; }
+
+    .ticket-summary-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--gray-50);
+      font-size: 14px;
+    }
+    .ticket-summary-row:last-child { border-bottom: none; }
+    .ticket-type { color: #333; font-weight: 500; }
+    .ticket-qty-price { color: var(--gray-600); }
+
+    /* FORM */
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .form-input, .form-select {
+      width: 100%; height: 44px;
+      background: var(--gray-50); border: 1.5px solid var(--gray-200);
+      border-radius: 10px; padding: 0 14px;
+      font-size: 14px; font-family: 'Inter', sans-serif;
+      color: #000; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--primary); background: #fff; }
+    .form-input::placeholder { color: var(--gray-400); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* PAYMENT METHOD */
+    .pay-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+    .pay-method {
+      border: 2px solid var(--gray-200); border-radius: 12px;
+      padding: 14px 10px; text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .pay-method.selected { border-color: var(--primary); background: rgba(12,25,78,0.04); }
+    .pay-method:hover { border-color: var(--primary); }
+    .pay-method-icon { font-size: 24px; margin-bottom: 6px; }
+    .pay-method-name { font-size: 12px; font-weight: 600; color: #374151; }
+    .pay-method input[type="radio"] { display: none; }
+
+    .bank-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .bank-option {
+      border: 1.5px solid var(--gray-200); border-radius: 10px;
+      padding: 10px 6px; text-align: center; cursor: pointer;
+      font-size: 12px; font-weight: 600; color: #374151;
+      transition: border-color 0.2s;
+    }
+    .bank-option:hover, .bank-option.selected { border-color: var(--primary); color: var(--primary); }
+
+    /* ORDER SUMMARY (right) */
+    .order-summary-panel {
+      background: #fff;
+      border: 1px solid var(--gray-100);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      position: sticky; top: 24px;
+    }
+    .order-title { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 18px; }
+    .order-row {
+      display: flex; justify-content: space-between;
+      font-size: 14px; margin-bottom: 10px; color: #374151;
+    }
+    .order-row.total {
+      font-size: 18px; font-weight: 700; color: var(--primary);
+      border-top: 1px solid var(--gray-200); padding-top: 12px; margin-top: 6px;
+    }
+    .order-row span:last-child { font-weight: 600; }
+
+    .promo-row {
+      display: flex; gap: 8px; margin-bottom: 16px;
+    }
+    .promo-input {
+      flex: 1; height: 40px; border: 1.5px solid var(--gray-200);
+      border-radius: 8px; padding: 0 12px; font-size: 13px;
+      font-family: 'Inter', sans-serif; outline: none;
+    }
+    .promo-input:focus { border-color: var(--primary); }
+    .btn-apply {
+      height: 40px; padding: 0 16px;
+      background: var(--primary); color: #fff; border: none;
+      border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      white-space: nowrap;
+    }
+
+    .timer-badge {
+      background: rgba(219,48,34,0.08);
+      border: 1px solid rgba(219,48,34,0.2);
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 13px; color: #dc2626;
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .btn-pay {
+      width: 100%; height: 52px;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 700;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: opacity 0.2s;
+    }
+    .btn-pay:hover { opacity: 0.88; }
+
+    .security-note {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--gray-500);
+      margin-top: 12px; justify-content: center;
+    }
+    .security-note svg { width: 14px; height: 14px; color: #22c55e; }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <nav class="navbar">
+      <a href="index.html" class="navbar-logo">
+        <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
+        <span class="navbar-logo-text">IndoConcert</span>
+      </a>
+      <div class="navbar-links">
+        <a href="index.html">Beranda</a>
+        <a href="explore.html">Jelajahi</a>
+        <a href="fan-match.html">Cari Teman</a>
+        <a href="about.html">Tentang Kami</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="profile.html" style="font-size:14px;color:var(--primary);font-weight:500;">👤 Akun Saya</a>
+      </div>
+    </nav>
+
+    <div class="payment-wrapper">
+      <!-- BREADCRUMB -->
+      <div class="breadcrumb">
+        <a href="index.html">Beranda</a><span>›</span>
+        <a href="concert-detail.html">Detail Konser</a><span>›</span>
+        <a href="booking.html">Pilih Tiket</a><span>›</span>
+        <strong style="color:#333;">Pembayaran</strong>
+      </div>
+
+      <!-- STEPS -->
+      <div class="steps">
+        <div class="step done">
+          <div class="step-circle">✓</div>
+          <span class="step-label">Pilih Tiket</span>
+        </div>
+        <div class="step done">
+          <div class="step-circle">✓</div>
+          <span class="step-label">Detail Kursi</span>
+        </div>
+        <div class="step active">
+          <div class="step-circle">3</div>
+          <span class="step-label">Pembayaran</span>
+        </div>
+        <div class="step">
+          <div class="step-circle">4</div>
+          <span class="step-label">E-Tiket</span>
+        </div>
+      </div>
+
+      <div class="payment-grid">
+        <!-- LEFT -->
+        <div>
+          <!-- Concert Summary -->
+          <div class="panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 0 0-2 2v3a2 2 0 1 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 1 1 0-4V7a2 2 0 0 0-2-2H5z"/></svg>
+              Ringkasan Pesanan
+            </div>
+            <div class="concert-summary">
+              <img src="images/e63a7118-baf7-43a9-85c9-5a45b703d885.png" alt="TULUS" />
+              <div class="concert-summary-info">
+                <h3>TULUS: Tur Manusia 2023</h3>
+                <p>📅 1 Februari 2023, 15:00 WIB</p>
+                <p>📍 Bali Nusa Dua Convention Center</p>
+              </div>
+            </div>
+            <div class="ticket-summary-row">
+              <span class="ticket-type">VIP A × 3</span>
+              <span class="ticket-qty-price">Rp 2.000.000 × 3 = <strong>Rp 6.000.000</strong></span>
+            </div>
+          </div>
+
+          <!-- Data Pemesan -->
+          <div class="panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Data Pemesan
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" class="form-input" placeholder="Nama sesuai KTP" value="Britney Angeline" />
+              </div>
+              <div class="form-group">
+                <label>Nomor Telepon</label>
+                <input type="tel" class="form-input" placeholder="+62" value="+62 812 3456 7890" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-input" placeholder="email@example.com" value="britneyangeline0@gmail.com" />
+            </div>
+          </div>
+
+          <!-- Metode Pembayaran -->
+          <div class="panel">
+            <div class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Metode Pembayaran
+            </div>
+            <div class="pay-methods">
+              <label class="pay-method selected" onclick="selectMethod(this)">
+                <input type="radio" name="payment" checked />
+                <div class="pay-method-icon">🏦</div>
+                <div class="pay-method-name">Transfer Bank</div>
+              </label>
+              <label class="pay-method" onclick="selectMethod(this)">
+                <input type="radio" name="payment" />
+                <div class="pay-method-icon">💳</div>
+                <div class="pay-method-name">Kartu Kredit</div>
+              </label>
+              <label class="pay-method" onclick="selectMethod(this)">
+                <input type="radio" name="payment" />
+                <div class="pay-method-icon">📱</div>
+                <div class="pay-method-name">E-Wallet</div>
+              </label>
+              <label class="pay-method" onclick="selectMethod(this)">
+                <input type="radio" name="payment" />
+                <div class="pay-method-icon">🏪</div>
+                <div class="pay-method-name">Minimarket</div>
+              </label>
+              <label class="pay-method" onclick="selectMethod(this)">
+                <input type="radio" name="payment" />
+                <div class="pay-method-icon">💰</div>
+                <div class="pay-method-name">Paylater</div>
+              </label>
+              <label class="pay-method" onclick="selectMethod(this)">
+                <input type="radio" name="payment" />
+                <div class="pay-method-icon">🪙</div>
+                <div class="pay-method-name">Kripto</div>
+              </label>
+            </div>
+
+            <div id="bankSection">
+              <p style="font-size:13px;color:#374151;margin-bottom:10px;font-weight:600;">Pilih Bank:</p>
+              <div class="bank-options">
+                <div class="bank-option selected" onclick="selectBank(this)">BCA</div>
+                <div class="bank-option" onclick="selectBank(this)">Mandiri</div>
+                <div class="bank-option" onclick="selectBank(this)">BNI</div>
+                <div class="bank-option" onclick="selectBank(this)">BRI</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Order Summary -->
+        <div class="order-summary-panel">
+          <div class="order-title">Ringkasan Pembayaran</div>
+
+          <div class="timer-badge">
+            ⏱️ Selesaikan dalam: <strong id="timer">14:59</strong>
+          </div>
+
+          <div class="order-row"><span>Harga Tiket (3×)</span><span>Rp 6.000.000</span></div>
+          <div class="order-row"><span>Biaya Layanan</span><span>Rp 90.000</span></div>
+          <div class="order-row" style="color:#22c55e;"><span>Diskon Promo</span><span>− Rp 0</span></div>
+          <div class="order-row total"><span>Total</span><span>Rp 6.090.000</span></div>
+
+          <div style="margin:18px 0 10px;font-size:13px;font-weight:600;color:#374151;">Kode Promo</div>
+          <div class="promo-row">
+            <input type="text" class="promo-input" placeholder="Masukkan kode promo" />
+            <button class="btn-apply">Pakai</button>
+          </div>
+
+          <button class="btn-pay" onclick="processPay()">Bayar Sekarang</button>
+
+          <div class="security-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Pembayaran aman &amp; terenkripsi SSL
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Countdown timer
+    let seconds = 899;
+    function tick() {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      document.getElementById('timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      if (seconds > 0) { seconds--; setTimeout(tick, 1000); }
+    }
+    tick();
+
+    function selectMethod(el) {
+      document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+    function selectBank(el) {
+      document.querySelectorAll('.bank-option').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+    function processPay() {
+      alert('Pembayaran berhasil diproses!\nE-tiket akan dikirim ke email Anda.');
+      window.location.href = 'my-tickets.html';
+    }
+  </script>
+</body>
+</html>

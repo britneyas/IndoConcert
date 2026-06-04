@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil Saya — IndoConcert</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    body { background: linear-gradient(175deg, rgba(112,140,255,0.06) 0%, #fff 50%); min-height: 100vh; }
+
+    .profile-layout {
+      max-width: 1100px; margin: 0 auto;
+      padding: 40px 32px 80px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ---- SIDEBAR ---- */
+    .sidebar {
+      display: flex; flex-direction: column; gap: 12px;
+      position: sticky; top: 24px;
+    }
+
+    .profile-card {
+      background: var(--primary);
+      border-radius: 20px;
+      padding: 28px 20px;
+      text-align: center;
+      color: #fff;
+    }
+    .profile-avatar {
+      width: 88px; height: 88px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      margin: 0 auto 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; font-weight: 700; color: #fff;
+      border: 3px solid rgba(255,255,255,0.4);
+      overflow: hidden;
+    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .profile-email { font-size: 13px; opacity: 0.75; margin-bottom: 14px; }
+    .btn-edit-photo {
+      background: rgba(255,255,255,0.2); color: #fff;
+      border: none; border-radius: 8px; padding: 7px 16px;
+      font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+    }
+    .btn-edit-photo:hover { background: rgba(255,255,255,0.35); }
+
+    .nav-menu {
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      overflow: hidden;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px; font-size: 14px; font-weight: 500;
+      color: #374151; cursor: pointer; text-decoration: none;
+      border-bottom: 1px solid var(--gray-50);
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-item:last-child { border-bottom: none; }
+    .nav-item:hover { background: var(--gray-50); color: var(--primary); }
+    .nav-item.active { background: rgba(12,25,78,0.07); color: var(--primary); font-weight: 700; }
+    .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .nav-item .badge {
+      margin-left: auto; background: var(--primary);
+      color: #fff; font-size: 10px; font-weight: 700;
+      padding: 2px 7px; border-radius: 10px;
+    }
+
+    /* ---- MAIN CONTENT ---- */
+    .main-col { display: flex; flex-direction: column; gap: 20px; }
+
+    .content-panel {
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      padding: 28px;
+    }
+    .panel-heading {
+      font-size: 18px; font-weight: 700; color: var(--primary);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .panel-heading svg { width: 20px; height: 20px; }
+
+    /* LOYALTY CARD */
+    .loyalty-card {
+      background: linear-gradient(135deg, var(--primary) 0%, #2d4a9e 60%, #4c65ce 100%);
+      border-radius: 18px; padding: 28px;
+      color: #fff; position: relative; overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .loyalty-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 50%;
+    }
+    .loyalty-card::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -20px;
+      width: 160px; height: 160px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    .loyalty-tier {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+    }
+    .tier-badge {
+      background: rgba(255,255,255,0.2);
+      border: 1.5px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 4px 14px;
+      font-size: 13px; font-weight: 700;
+    }
+    .loyalty-points-wrap { display: flex; align-items: baseline; gap: 6px; margin-bottom: 6px; }
+    .loyalty-points { font-size: 52px; font-weight: 900; line-height: 1; }
+    .loyalty-points-label { font-size: 16px; opacity: 0.75; }
+    .loyalty-sub { font-size: 13px; opacity: 0.7; margin-bottom: 20px; }
+    .loyalty-progress-label {
+      display: flex; justify-content: space-between;
+      font-size: 12px; opacity: 0.75; margin-bottom: 6px;
+    }
+    .loyalty-bar { background: rgba(255,255,255,0.2); border-radius: 6px; height: 8px; }
+    .loyalty-bar-fill {
+      background: #fff; border-radius: 6px; height: 8px;
+      transition: width 1s ease;
+    }
+    .loyalty-next { font-size: 12px; opacity: 0.7; margin-top: 6px; }
+
+    /* TIER BENEFITS */
+    .tiers-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 24px; }
+    .tier-card {
+      border-radius: 14px; padding: 16px;
+      border: 2px solid transparent; text-align: center;
+    }
+    .tier-card.bronze  { background: rgba(205,127,50,0.08); border-color: rgba(205,127,50,0.3); }
+    .tier-card.silver  { background: rgba(192,192,192,0.1); border-color: rgba(192,192,192,0.4); }
+    .tier-card.gold    { background: rgba(255,215,0,0.1);  border-color: rgba(255,215,0,0.5); }
+    .tier-card.current { box-shadow: 0 0 0 2px var(--primary); }
+    .tier-icon { font-size: 28px; margin-bottom: 6px; }
+    .tier-name { font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 4px; }
+    .tier-pts  { font-size: 11px; color: var(--gray-500); margin-bottom: 8px; }
+    .tier-perks { text-align: left; }
+    .tier-perk { font-size: 11px; color: var(--gray-600); display: flex; align-items: flex-start; gap: 4px; margin-bottom: 3px; }
+
+    /* POINT HISTORY */
+    .history-list { display: flex; flex-direction: column; gap: 0; }
+    .history-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 0; border-bottom: 1px solid var(--gray-50);
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .history-icon.earn   { background: rgba(34,197,94,0.1); }
+    .history-icon.redeem { background: rgba(239,68,68,0.1); }
+    .history-info { flex: 1; }
+    .history-title { font-size: 14px; font-weight: 600; color: #111; }
+    .history-date  { font-size: 12px; color: var(--gray-500); }
+    .history-pts { font-size: 15px; font-weight: 700; }
+    .history-pts.earn   { color: #22c55e; }
+    .history-pts.redeem { color: #ef4444; }
+
+    /* REWARDS */
+    .rewards-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+    .reward-card {
+      border: 1.5px solid var(--gray-200); border-radius: 14px;
+      padding: 16px; display: flex; gap: 12px; align-items: center;
+      cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .reward-card:hover { border-color: var(--primary); box-shadow: 0 2px 10px rgba(12,25,78,0.1); }
+    .reward-icon { font-size: 32px; flex-shrink: 0; }
+    .reward-info h4 { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 4px; }
+    .reward-info p { font-size: 12px; color: var(--gray-500); margin-bottom: 6px; }
+    .reward-cost {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 700; color: var(--primary);
+      background: rgba(12,25,78,0.08); padding: 3px 10px; border-radius: 10px;
+    }
+
+    /* FORM */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .form-input, .form-select {
+      width: 100%; height: 44px;
+      background: var(--gray-50); border: 1.5px solid var(--gray-200);
+      border-radius: 10px; padding: 0 14px;
+      font-size: 14px; font-family: 'Inter', sans-serif; color: #000; outline: none;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--primary); background: #fff; }
+    .btn-save {
+      background: var(--primary); color: #fff; border: none;
+      border-radius: 10px; padding: 12px 32px; font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: 'Inter', sans-serif; transition: opacity 0.2s;
+    }
+    .btn-save:hover { opacity: 0.88; }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <nav class="navbar">
+      <a href="index.html" class="navbar-logo">
+        <svg viewBox="0 0 30 45" fill="none"><path d="M14 2C14 2 6 10 6 22C6 28 9 33 14 36" stroke="#0c194e" stroke-width="3" stroke-linecap="round"/><path d="M8 8L22 4L20 18L8 8Z" fill="#0c194e"/></svg>
+        <span class="navbar-logo-text">IndoConcert</span>
+      </a>
+      <div class="navbar-links">
+        <a href="index.html">Beranda</a>
+        <a href="explore.html">Jelajahi</a>
+        <a href="fan-match.html">Cari Teman</a>
+        <a href="about.html">Tentang Kami</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="my-tickets.html" class="btn-masuk">🎫 Tiket Saya</a>
+      </div>
+    </nav>
+
+    <div class="profile-layout">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="profile-card">
+          <div class="profile-avatar">B</div>
+          <div class="profile-name">Britney Angeline</div>
+          <div class="profile-email">britneyangeline0@gmail.com</div>
+          <button class="btn-edit-photo" onclick="alert('Fitur ganti foto akan segera hadir!')">📷 Ganti Foto</button>
+        </div>
+
+        <div class="nav-menu">
+          <a href="#loyalty" class="nav-item active" onclick="showSection('loyalty', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Program Loyalitas
+          </a>
+          <a href="#tickets" class="nav-item" onclick="showSection('tickets', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 0 0-2 2v3a2 2 0 1 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 1 1 0-4V7a2 2 0 0 0-2-2H5z"/></svg>
+            Tiket Saya <span class="badge">3</span>
+          </a>
+          <a href="#edit" class="nav-item" onclick="showSection('edit', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Edit Profil
+          </a>
+          <a href="#" class="nav-item" onclick="showSection('notif', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Notifikasi
+          </a>
+          <a href="login.html" class="nav-item" style="color:#ef4444;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Keluar
+          </a>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="main-col">
+
+        <!-- LOYALTY SECTION -->
+        <div id="section-loyalty">
+          <div class="content-panel">
+            <div class="panel-heading">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Program Loyalitas IndoConcert
+            </div>
+
+            <!-- Loyalty Card -->
+            <div class="loyalty-card">
+              <div class="loyalty-tier">
+                <div style="font-size:24px;">🥇</div>
+                <div class="tier-badge">GOLD MEMBER</div>
+              </div>
+              <div class="loyalty-points-wrap">
+                <div class="loyalty-points">4.250</div>
+                <div class="loyalty-points-label">poin</div>
+              </div>
+              <div class="loyalty-sub">Britney Angeline • Member sejak Januari 2024</div>
+              <div class="loyalty-progress-label">
+                <span>Gold (3.000 poin)</span>
+                <span>Platinum (10.000 poin)</span>
+              </div>
+              <div class="loyalty-bar">
+                <div class="loyalty-bar-fill" id="loyaltyBar" style="width:42.5%;"></div>
+              </div>
+              <div class="loyalty-next">Butuh <strong>5.750 poin</strong> lagi untuk naik ke Platinum</div>
+            </div>
+
+            <!-- Tier Cards -->
+            <h3 style="font-size:15px;font-weight:700;color:#374151;margin-bottom:12px;">Level Keanggotaan</h3>
+            <div class="tiers-grid">
+              <div class="tier-card bronze">
+                <div class="tier-icon">🥉</div>
+                <div class="tier-name">Bronze</div>
+                <div class="tier-pts">0 – 999 poin</div>
+                <div class="tier-perks">
+                  <div class="tier-perk">✓ Akses presale 1 hari</div>
+                  <div class="tier-perk">✓ Diskon 3%</div>
+                </div>
+              </div>
+              <div class="tier-card silver">
+                <div class="tier-icon">🥈</div>
+                <div class="tier-name">Silver</div>
+                <div class="tier-pts">1.000 – 2.999 poin</div>
+                <div class="tier-perks">
+                  <div class="tier-perk">✓ Akses presale 3 hari</div>
+                  <div class="tier-perk">✓ Diskon 7%</div>
+                  <div class="tier-perk">✓ 1 tiket gratis/tahun</div>
+                </div>
+              </div>
+              <div class="tier-card gold current">
+                <div class="tier-icon">🥇</div>
+                <div class="tier-name">Gold ← Kamu di sini</div>
+                <div class="tier-pts">3.000 – 9.999 poin</div>
+                <div class="tier-perks">
+                  <div class="tier-perk">✓ Akses presale 7 hari</div>
+                  <div class="tier-perk">✓ Diskon 12%</div>
+                  <div class="tier-perk">✓ 2 tiket gratis/tahun</div>
+                  <div class="tier-perk">✓ Priority customer support</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- REWARDS -->
+          <div class="content-panel">
+            <div class="panel-heading">🎁 Tukarkan Poin</div>
+            <div class="rewards-grid">
+              <div class="reward-card" onclick="redeemReward('Diskon 50K')">
+                <div class="reward-icon">💸</div>
+                <div class="reward-info">
+                  <h4>Diskon Rp 50.000</h4>
+                  <p>Berlaku untuk pembelian tiket min. Rp 500.000</p>
+                  <div class="reward-cost">⭐ 500 poin</div>
+                </div>
+              </div>
+              <div class="reward-card" onclick="redeemReward('Gratis Tiket')">
+                <div class="reward-icon">🎟️</div>
+                <div class="reward-info">
+                  <h4>1 Tiket Gratis</h4>
+                  <p>Tiket Regular A untuk konser pilihan</p>
+                  <div class="reward-cost">⭐ 2.000 poin</div>
+                </div>
+              </div>
+              <div class="reward-card" onclick="redeemReward('Merchandise')">
+                <div class="reward-icon">👕</div>
+                <div class="reward-info">
+                  <h4>Merchandise Eksklusif</h4>
+                  <p>Kaos + tote bag IndoConcert edisi terbatas</p>
+                  <div class="reward-cost">⭐ 1.500 poin</div>
+                </div>
+              </div>
+              <div class="reward-card" onclick="redeemReward('Meet & Greet')">
+                <div class="reward-icon">🤝</div>
+                <div class="reward-info">
+                  <h4>Meet &amp; Greet Pass</h4>
+                  <p>Bertemu artis pilihan secara eksklusif</p>
+                  <div class="reward-cost">⭐ 5.000 poin</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- POINT HISTORY -->
+          <div class="content-panel">
+            <div class="panel-heading">📋 Riwayat Poin</div>
+            <div class="history-list">
+              <div class="history-item">
+                <div class="history-icon earn">⬆️</div>
+                <div class="history-info">
+                  <div class="history-title">Pembelian — TULUS: Tur Manusia</div>
+                  <div class="history-date">1 Februari 2024</div>
+                </div>
+                <div class="history-pts earn">+600</div>
+              </div>
+              <div class="history-item">
+                <div class="history-icon earn">⬆️</div>
+                <div class="history-info">
+                  <div class="history-title">Pembelian — Raisa Live Concert</div>
+                  <div class="history-date">20 Januari 2024</div>
+                </div>
+                <div class="history-pts earn">+350</div>
+              </div>
+              <div class="history-item">
+                <div class="history-icon redeem">⬇️</div>
+                <div class="history-info">
+                  <div class="history-title">Penukaran — Diskon Rp 50.000</div>
+                  <div class="history-date">15 Desember 2023</div>
+                </div>
+                <div class="history-pts redeem">−500</div>
+              </div>
+              <div class="history-item">
+                <div class="history-icon earn">⬆️</div>
+                <div class="history-info">
+                  <div class="history-title">Bonus — Review Konser Lyodra</div>
+                  <div class="history-date">20 November 2023</div>
+                </div>
+                <div class="history-pts earn">+50</div>
+              </div>
+              <div class="history-item">
+                <div class="history-icon earn">⬆️</div>
+                <div class="history-info">
+                  <div class="history-title">Pembelian — Lyodra Ginting Solo Tur</div>
+                  <div class="history-date">13 November 2023</div>
+                </div>
+                <div class="history-pts earn">+1.000</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TICKETS SECTION -->
+        <div id="section-tickets" style="display:none;">
+          <div class="content-panel">
+            <div class="panel-heading">🎫 Tiket Saya</div>
+            <p style="color:var(--gray-600);margin-bottom:16px;">Lihat semua tiket kamu di halaman khusus.</p>
+            <a href="my-tickets.html" class="btn-save" style="text-decoration:none;display:inline-block;">Buka Halaman Tiket Saya →</a>
+          </div>
+        </div>
+
+        <!-- EDIT SECTION -->
+        <div id="section-edit" style="display:none;">
+          <div class="content-panel">
+            <div class="panel-heading">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Edit Profil
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nama Depan</label>
+                <input type="text" class="form-input" value="Britney" />
+              </div>
+              <div class="form-group">
+                <label>Nama Belakang</label>
+                <input type="text" class="form-input" value="Angeline" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-input" value="britneyangeline0@gmail.com" />
+            </div>
+            <div class="form-group">
+              <label>Nomor Telepon</label>
+              <input type="tel" class="form-input" value="+62 812 3456 7890" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Kota</label>
+                <input type="text" class="form-input" value="Jakarta" />
+              </div>
+              <div class="form-group">
+                <label>Genre Favorit</label>
+                <select class="form-select">
+                  <option>Pop</option><option>Indie</option><option>K-Pop</option><option>Jazz</option><option>Rock</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Bio</label>
+              <textarea class="form-input" style="height:80px;padding:10px;resize:vertical;">Concert enthusiast 🎵 | Raisa & Tulus biggest fan</textarea>
+            </div>
+            <button class="btn-save" onclick="alert('Profil berhasil disimpan!')">Simpan Perubahan</button>
+          </div>
+        </div>
+
+        <!-- NOTIF SECTION -->
+        <div id="section-notif" style="display:none;">
+          <div class="content-panel">
+            <div class="panel-heading">🔔 Pengaturan Notifikasi</div>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <label style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--gray-50);border-radius:10px;cursor:pointer;">
+                <div><div style="font-weight:600;font-size:14px;color:#111;">Notifikasi Konser Baru</div><div style="font-size:12px;color:var(--gray-500);">Info konser artis favoritmu</div></div>
+                <input type="checkbox" checked style="width:20px;height:20px;accent-color:var(--primary);" />
+              </label>
+              <label style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--gray-50);border-radius:10px;cursor:pointer;">
+                <div><div style="font-weight:600;font-size:14px;color:#111;">Pengingat Konser</div><div style="font-size:12px;color:var(--gray-500);">H-3 dan H-1 sebelum konser</div></div>
+                <input type="checkbox" checked style="width:20px;height:20px;accent-color:var(--primary);" />
+              </label>
+              <label style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--gray-50);border-radius:10px;cursor:pointer;">
+                <div><div style="font-weight:600;font-size:14px;color:#111;">Update Poin Loyalitas</div><div style="font-size:12px;color:var(--gray-500);">Poin baru & reward tersedia</div></div>
+                <input type="checkbox" checked style="width:20px;height:20px;accent-color:var(--primary);" />
+              </label>
+              <label style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--gray-50);border-radius:10px;cursor:pointer;">
+                <div><div style="font-weight:600;font-size:14px;color:#111;">Promo &amp; Diskon</div><div style="font-size:12px;color:var(--gray-500);">Flash sale dan penawaran spesial</div></div>
+                <input type="checkbox" style="width:20px;height:20px;accent-color:var(--primary);" />
+              </label>
+            </div>
+            <button class="btn-save" style="margin-top:20px;" onclick="alert('Pengaturan disimpan!')">Simpan</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showSection(name, navEl) {
+      ['loyalty','tickets','edit','notif'].forEach(s => {
+        const el = document.getElementById('section-' + s);
+        if (el) el.style.display = s === name ? 'flex' : 'none';
+        if (s === name && el) el.style.flexDirection = 'column';
+      });
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      navEl.classList.add('active');
+    }
+    function redeemReward(name) {
+      if (confirm(`Tukarkan poin untuk "${name}"?`)) {
+        alert(`"${name}" berhasil ditukar! Cek email untuk detail reward.`);
+      }
+    }
+  </script>
+</body>
+</html>
